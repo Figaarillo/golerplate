@@ -14,8 +14,8 @@ a starting point for new projects.
 1. Clone the repository
 
 ```bash
-git clone https://github.com/figarillo/gobplate.git
-cd gobplate
+git clone https://github.com/figarillo/golerplate.git
+cd golerplate
 ```
 
 2. Copy the `.env.example` to `.env`
