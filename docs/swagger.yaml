@@ -1,0 +1,417 @@
+basePath: /api
+definitions:
+  entity.Category:
+    type: object
+  entity.Client:
+    properties:
+      age:
+        maximum: 120
+        minimum: 0
+        type: integer
+      created_at:
+        type: string
+      email:
+        type: string
+      firstname:
+        type: string
+      id:
+        type: string
+      lastname:
+        type: string
+      orders:
+        items:
+          $ref: '#/definitions/entity.Order'
+        type: array
+      updated_at:
+        type: string
+    required:
+    - email
+    - firstname
+    - lastname
+    type: object
+  entity.Order:
+    properties:
+      client:
+        $ref: '#/definitions/entity.Client'
+      client_id:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: string
+      products:
+        items:
+          $ref: '#/definitions/entity.Product'
+        type: array
+      status:
+        type: string
+      total:
+        type: number
+      updated_at:
+        type: string
+    required:
+    - status
+    type: object
+  entity.Product:
+    properties:
+      category:
+        $ref: '#/definitions/entity.Category'
+      category_id:
+        type: string
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      price:
+        minimum: 0
+        type: number
+      stock:
+        minimum: 0
+        type: integer
+      updated_at:
+        type: string
+    required:
+    - category_id
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: axel.leonardi.22@gmail.com
+    name: Figarillo
+  description: Ecomerce API
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Ecomerce API
+  version: "1.0"
+paths:
+  /api/categories:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of all categories
+      parameters:
+      - description: Offset
+        in: query
+        name: offset
+        required: true
+        type: integer
+      - description: Limit
+        in: query
+        name: limit
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: List all categories
+      tags:
+      - categories
+    post:
+      consumes:
+      - application/json
+      description: Create a new category
+      parameters:
+      - description: Category
+        in: body
+        name: category
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Category'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+      summary: Create a category
+      tags:
+      - categories
+  /api/categories/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a category
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: Delete a category
+      tags:
+      - categories
+    get:
+      consumes:
+      - application/json
+      description: Get a category by ID
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: Get a category
+      tags:
+      - categories
+    put:
+      consumes:
+      - application/json
+      description: Update a category
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Category
+        in: body
+        name: category
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Category'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: Update a category
+      tags:
+      - categories
+  /api/clients:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of all clients
+      parameters:
+      - description: Offset
+        in: query
+        name: offset
+        required: true
+        type: integer
+      - description: Limit
+        in: query
+        name: limit
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.Client'
+            type: array
+      summary: List all clients
+      tags:
+      - clients
+    post:
+      consumes:
+      - application/json
+      description: Create a new client
+      parameters:
+      - description: Client
+        in: body
+        name: client
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Client'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+      summary: Create a client
+      tags:
+      - clients
+  /api/clients/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a client
+      parameters:
+      - description: Client ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: Delete a client
+      tags:
+      - clients
+    get:
+      consumes:
+      - application/json
+      description: Get a client by ID
+      parameters:
+      - description: Client ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Client'
+      summary: Get a client
+      tags:
+      - clients
+    put:
+      consumes:
+      - application/json
+      description: Update a client
+      parameters:
+      - description: Client ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Client
+        in: body
+        name: client
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Client'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: Update a client
+      tags:
+      - clients
+  /api/products:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of products with pagination
+      parameters:
+      - description: Offset
+        in: query
+        name: offset
+        required: true
+        type: integer
+      - description: Limit
+        in: query
+        name: limit
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.Product'
+            type: array
+      summary: List products with pagination
+      tags:
+      - products
+    post:
+      consumes:
+      - application/json
+      description: Create a new product
+      parameters:
+      - description: Product
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Product'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+      summary: Create a product
+      tags:
+      - products
+  /api/products/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a product
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: Delete a product
+      tags:
+      - products
+    get:
+      consumes:
+      - application/json
+      description: Get a product by ID
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Product'
+      summary: Get a product
+      tags:
+      - products
+    put:
+      consumes:
+      - application/json
+      description: Update a product
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Product
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Product'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: Update a product
+      tags:
+      - products
+swagger: "2.0"
