@@ -1,6 +1,6 @@
-# GoBPlate
+# GOlerplate
 
-GoBPlate is a boilerplate for Golang web applications. It is meant to be used as
+GOlerpalte is a boilerplate for Golang web applications. It is meant to be used as
 a starting point for new projects.
 
 ## Pre-requisites
