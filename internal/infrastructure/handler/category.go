@@ -24,14 +24,15 @@ func NewCategoryHandler(r repository.CategoryRepository) *CategoryHandler {
 	}
 }
 
-// @Summary List all categories
-// @Description Get a list of all categories
+// ListAll godoc
+// @Summary List all categories with pagination
+// @Description Get a list of all categories with pagination
 // @Tags categories
 // @Accept  json
 // @Produce  json
 // @Param offset query int true "Offset"
 // @Param limit query int true "Limit"
-// @Success 200
+// @Success 200 {array} entity.Category "Categories retrieved successfully"
 // @Router /api/categories [get]
 func (h *CategoryHandler) ListAll(w http.ResponseWriter, r *http.Request) {
 	offset, limit := utils.GetPagination(r)
@@ -45,13 +46,14 @@ func (h *CategoryHandler) ListAll(w http.ResponseWriter, r *http.Request) {
 	utils.HandleHTTPResponse(w, "Categories retrieved successfully", http.StatusOK, categories)
 }
 
-// @Summary Get a category
-// @Description Get a category by ID
+// GetByID godoc
+// @Summary Get a category by ID
+// @Description Retrieve a category using its ID
 // @Tags categories
 // @Accept  json
 // @Produce  json
 // @Param id path int true "Category ID"
-// @Success 200
+// @Success 200 {object} entity.Category "Category retrieved successfully"
 // @Router /api/categories/{id} [get]
 func (h *CategoryHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 	id, err := utils.GetURLParam(r, "id")
@@ -69,13 +71,14 @@ func (h *CategoryHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 	utils.HandleHTTPResponse(w, "Category retrieved successfully", http.StatusOK, category)
 }
 
-// @Summary Create a category
-// @Description Create a new category
+// Create godoc
+// @Summary Create a new category
+// @Description Create a new category with the provided data
 // @Tags categories
 // @Accept  json
 // @Produce  json
-// @Param category body entity.Category true "Category"
-// @Success 201
+// @Param category body entity.Category true "Category data"
+// @Success 201 {object} entity.Category "Category created successfully"
 // @Router /api/categories [post]
 func (h *CategoryHandler) Create(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
@@ -100,14 +103,15 @@ func (h *CategoryHandler) Create(w http.ResponseWriter, r *http.Request) {
 	utils.HandleHTTPResponse(w, "Category created successfully", http.StatusCreated, nil)
 }
 
-// @Summary Update a category
-// @Description Update a category
+// Update godoc
+// @Summary Update a category by ID
+// @Description Update an existing category by ID
 // @Tags categories
 // @Accept  json
 // @Produce  json
 // @Param id path int true "Category ID"
-// @Param category body entity.Category true "Category"
-// @Success 200
+// @Param category body entity.Category true "Category data"
+// @Success 200 {object} entity.Category "Category updated successfully"
 // @Router /api/categories/{id} [put]
 func (h *CategoryHandler) Update(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
@@ -132,13 +136,14 @@ func (h *CategoryHandler) Update(w http.ResponseWriter, r *http.Request) {
 	utils.HandleHTTPResponse(w, "Category updated successfully", http.StatusOK, nil)
 }
 
-// @Summary Delete a category
-// @Description Delete a category
+// Delete godoc
+// @Summary Delete a category by ID
+// @Description Delete an existing category using its ID
 // @Tags categories
 // @Accept  json
 // @Produce  json
 // @Param id path int true "Category ID"
-// @Success 200
+// @Success 200 "Category deleted successfully"
 // @Router /api/categories/{id} [delete]
 func (h *CategoryHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	id, err := utils.GetURLParam(r, "id")

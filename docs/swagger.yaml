@@ -1,6 +1,21 @@
 basePath: /api
 definitions:
   entity.Category:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      products:
+        items:
+          $ref: '#/definitions/entity.Product'
+        type: array
+      updated_at:
+        type: string
     type: object
   entity.Client:
     properties:
@@ -50,6 +65,7 @@ definitions:
       updated_at:
         type: string
     required:
+    - client_id
     - status
     type: object
   entity.Product:
@@ -82,19 +98,19 @@ info:
   contact:
     email: axel.leonardi.22@gmail.com
     name: Figarillo
-  description: Ecomerce API
+  description: GOlerplate is boilerpalte for GO
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   termsOfService: http://swagger.io/terms/
-  title: Ecomerce API
+  title: golerplate API
   version: "1.0"
 paths:
   /api/categories:
     get:
       consumes:
       - application/json
-      description: Get a list of all categories
+      description: Get a list of all categories with pagination
       parameters:
       - description: Offset
         in: query
@@ -110,16 +126,20 @@ paths:
       - application/json
       responses:
         "200":
-          description: OK
-      summary: List all categories
+          description: Categories retrieved successfully
+          schema:
+            items:
+              $ref: '#/definitions/entity.Category'
+            type: array
+      summary: List all categories with pagination
       tags:
       - categories
     post:
       consumes:
       - application/json
-      description: Create a new category
+      description: Create a new category with the provided data
       parameters:
-      - description: Category
+      - description: Category data
         in: body
         name: category
         required: true
@@ -129,15 +149,17 @@ paths:
       - application/json
       responses:
         "201":
-          description: Created
-      summary: Create a category
+          description: Category created successfully
+          schema:
+            $ref: '#/definitions/entity.Category'
+      summary: Create a new category
       tags:
       - categories
   /api/categories/{id}:
     delete:
       consumes:
       - application/json
-      description: Delete a category
+      description: Delete an existing category using its ID
       parameters:
       - description: Category ID
         in: path
@@ -148,14 +170,14 @@ paths:
       - application/json
       responses:
         "200":
-          description: OK
-      summary: Delete a category
+          description: Category deleted successfully
+      summary: Delete a category by ID
       tags:
       - categories
     get:
       consumes:
       - application/json
-      description: Get a category by ID
+      description: Retrieve a category using its ID
       parameters:
       - description: Category ID
         in: path
@@ -166,21 +188,23 @@ paths:
       - application/json
       responses:
         "200":
-          description: OK
-      summary: Get a category
+          description: Category retrieved successfully
+          schema:
+            $ref: '#/definitions/entity.Category'
+      summary: Get a category by ID
       tags:
       - categories
     put:
       consumes:
       - application/json
-      description: Update a category
+      description: Update an existing category by ID
       parameters:
       - description: Category ID
         in: path
         name: id
         required: true
         type: integer
-      - description: Category
+      - description: Category data
         in: body
         name: category
         required: true
@@ -190,8 +214,10 @@ paths:
       - application/json
       responses:
         "200":
-          description: OK
-      summary: Update a category
+          description: Category updated successfully
+          schema:
+            $ref: '#/definitions/entity.Category'
+      summary: Update a category by ID
       tags:
       - categories
   /api/clients:
@@ -304,6 +330,137 @@ paths:
       summary: Update a client
       tags:
       - clients
+  /api/orders:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of orders with pagination
+      parameters:
+      - description: Offset
+        in: query
+        name: offset
+        required: true
+        type: integer
+      - description: Limit
+        in: query
+        name: limit
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Orders retrieved successfully
+          schema:
+            items:
+              $ref: '#/definitions/entity.Order'
+            type: array
+      summary: List orders with pagination
+      tags:
+      - orders
+    post:
+      consumes:
+      - application/json
+      description: Create a new order with the provided data
+      parameters:
+      - description: Order data
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Order'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Order created successfully
+          schema:
+            $ref: '#/definitions/entity.Order'
+      summary: Create a new order
+      tags:
+      - orders
+  /api/orders/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a order by its ID
+      parameters:
+      - description: order ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Order deleted successfully
+      summary: Delete a order
+      tags:
+      - orders
+    get:
+      consumes:
+      - application/json
+      description: Retrive a order using its ID
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Order retrieved successfully
+          schema:
+            $ref: '#/definitions/entity.Order'
+      summary: Get a order by ID
+      tags:
+      - orders
+    put:
+      consumes:
+      - application/json
+      description: Set order status
+      parameters:
+      - description: order ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Order data
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Order'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Order status updated successfully
+          schema:
+            $ref: '#/definitions/entity.Order'
+      summary: Set status
+      tags:
+      - orders
+  /api/orders/client/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrive orders using its client ID
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Orders retrieved successfully
+          schema:
+            items:
+              $ref: '#/definitions/entity.Order'
+            type: array
+      summary: Get orders by client ID
+      tags:
+      - orders
   /api/products:
     get:
       consumes:

@@ -5,17 +5,15 @@ import (
 
 	"github.com/Figaarillo/golerplate/internal/domain/exeption"
 	"github.com/Figaarillo/golerplate/internal/share/utils"
-	"gorm.io/gorm"
 )
 
 type Category struct {
-	CreatedAt   time.Time      `json:"created_at"`
-	UpdatedAt   time.Time      `json:"updated_at"`
-	DeletedAt   gorm.DeletedAt `json:"deleted_at" gorm:"index"`
-	Name        string         `json:"name" gorm:"unique"`
-	Description string         `json:"description" gorm:"not null;default:''"`
-	Products    []Product      `json:"products" gorm:"foreignKey:CategoryID"`
-	ID          ID             `json:"id"`
+	CreatedAt   time.Time `json:"created_at"`
+	UpdatedAt   time.Time `json:"updated_at"`
+	Name        string    `json:"name" gorm:"unique"`
+	Description string    `json:"description" gorm:"not null;default:''"`
+	Products    []Product `json:"products" gorm:"foreignKey:CategoryID"`
+	ID          ID        `json:"id"`
 }
 
 func NewCategory(payload Category) (*Category, error) {

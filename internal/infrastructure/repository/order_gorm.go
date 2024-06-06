@@ -13,7 +13,7 @@ func NewOrderGorm(db *gorm.DB) *OrderGorm {
 	return &OrderGorm{db: db}
 }
 
-func (o *OrderGorm) List(offset, limit int) ([]entity.Order, error) {
+func (o *OrderGorm) ListAll(offset, limit int) ([]entity.Order, error) {
 	var orders []entity.Order
 	if result := o.db.Model(&entity.Order{}).
 		Offset(offset).Limit(limit).

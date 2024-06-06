@@ -4,13 +4,11 @@ import (
 	"time"
 
 	"github.com/Figaarillo/golerplate/internal/domain/exeption"
-	"gorm.io/gorm"
 )
 
 type Order struct {
 	CreatedAt time.Time      `json:"created_at"`
 	UpdatedAt time.Time      `json:"updated_at"`
-	DeletedAt gorm.DeletedAt `json:"deleted_at" gorm:"index"`
 	Status    string         `json:"status" gorm:"not null" validate:"required"`
 	Products  []Product      `json:"products" gorm:"many2many:order_products;"`
 	Client    Client         `json:"client" gorm:"foreignKey:ClientID"`

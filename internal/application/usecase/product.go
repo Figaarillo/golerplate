@@ -13,7 +13,7 @@ func NewProductUseCase(r repository.ProductRepository) *ProductUseCase {
 	return &ProductUseCase{repository: r}
 }
 
-func (uc *ProductUseCase) List(offset, limit int) ([]entity.Product, error) {
+func (uc *ProductUseCase) ListAll(offset, limit int) ([]entity.Product, error) {
 	return uc.repository.List(offset, limit)
 }
 

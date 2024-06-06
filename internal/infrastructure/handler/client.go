@@ -25,14 +25,15 @@ func NewClientHandler(r repository.ClientRepository) *ClientHandler {
 	}
 }
 
-// @Summary List all clients
-// @Description Get a list of all clients
+// ListAll godoc
+// @Summary List all clients with pagination
+// @Description Get a list of all clients with pagination
 // @Tags clients
 // @Accept  json
 // @Produce  json
 // @Param offset query int true "Offset"
 // @Param limit query int true "Limit"
-// @Success 200 {array} entity.Client
+// @Success 200 {array} entity.Client "Clients retrieved successfully"
 // @Router /api/clients [get]
 func (h *ClientHandler) ListAll(w http.ResponseWriter, r *http.Request) {
 	offset, limit := utils.GetPagination(r)
@@ -46,13 +47,14 @@ func (h *ClientHandler) ListAll(w http.ResponseWriter, r *http.Request) {
 	utils.HandleHTTPResponse(w, "Clients retrieved successfully", http.StatusOK, clients)
 }
 
-// @Summary Get a client
-// @Description Get a client by ID
+// GetByID godoc
+// @Summary Get a client by ID
+// @Description Retrieve a client using its ID
 // @Tags clients
 // @Accept  json
 // @Produce  json
 // @Param id path int true "Client ID"
-// @Success 200 {object} entity.Client
+// @Success 200 {object} entity.Client "Client retrieved successfully"
 // @Router /api/clients/{id} [get]
 func (h *ClientHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 	id, err := utils.GetURLParam(r, "id")
@@ -70,13 +72,14 @@ func (h *ClientHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 	utils.HandleHTTPResponse(w, "Client retrieved successfully", http.StatusOK, client)
 }
 
+// Create godoc
 // @Summary Create a client
-// @Description Create a new client
+// @Description Create a new client with the provided data
 // @Tags clients
 // @Accept  json
 // @Produce  json
 // @Param client body entity.Client true "Client"
-// @Success 201
+// @Success 201 {object} entity.Client "Client created successfully"
 // @Router /api/clients [post]
 func (h *ClientHandler) Create(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
@@ -101,14 +104,15 @@ func (h *ClientHandler) Create(w http.ResponseWriter, r *http.Request) {
 	utils.HandleHTTPResponse(w, "Client created successfully", http.StatusCreated, nil)
 }
 
+// Update godoc
 // @Summary Update a client
-// @Description Update a client
+// @Description Update an existing client by ID
 // @Tags clients
 // @Accept  json
 // @Produce  json
 // @Param id path int true "Client ID"
-// @Param client body entity.Client true "Client"
-// @Success 200
+// @Param client body entity.Client true "Client data"
+// @Success 200 {object} entity.Client "Client updated successfully"
 // @Router /api/clients/{id} [put]
 func (h *ClientHandler) Update(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
@@ -133,13 +137,14 @@ func (h *ClientHandler) Update(w http.ResponseWriter, r *http.Request) {
 	utils.HandleHTTPResponse(w, "Client updated successfully", http.StatusOK, nil)
 }
 
-// @Summary Delete a client
-// @Description Delete a client
+// Delete godoc
+// @Summary Delete a client by ID
+// @Description Delete an existing client using its ID
 // @Tags clients
 // @Accept  json
 // @Produce  json
 // @Param id path int true "Client ID"
-// @Success 200
+// @Success 200 "Client deleted successfully"
 // @Router /api/clients/{id} [delete]
 func (h *ClientHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	id, err := utils.GetURLParam(r, "id")

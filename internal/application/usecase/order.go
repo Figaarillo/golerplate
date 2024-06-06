@@ -14,12 +14,12 @@ func NewOrderUseCase(r repository.OrderRepository) *OrderUseCase {
 	return &OrderUseCase{repository: r}
 }
 
-func (uc *OrderUseCase) List(offset, limit int) ([]entity.Order, error) {
+func (uc *OrderUseCase) ListAll(offset, limit int) ([]entity.Order, error) {
 	if offset < 0 || limit < 0 || (offset == 0 && limit == 0) {
 		return nil, exeption.ErrInvalidURLParams
 	}
 
-	return uc.repository.List(offset, limit)
+	return uc.repository.ListAll(offset, limit)
 }
 
 func (uc *OrderUseCase) GetByID(id string) (entity.Order, error) {

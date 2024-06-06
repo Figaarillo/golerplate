@@ -5,21 +5,19 @@ import (
 
 	"github.com/Figaarillo/golerplate/internal/domain/exeption"
 	"github.com/Figaarillo/golerplate/internal/share/utils"
-	"gorm.io/gorm"
 )
 
 type Product struct {
-	CreatedAt   time.Time      `json:"created_at"`
-	UpdatedAt   time.Time      `json:"updated_at"`
-	DeletedAt   gorm.DeletedAt `json:"deleted_at" gorm:"index"`
-	Name        string         `json:"name" gorm:"unique;not null"`
-	Description string         `json:"description" gorm:"not null;default:''"`
-	Orders      []Order        `json:"-" gorm:"many2many:order_products;"`
-	Category    Category       `json:"category" gorm:"foreignKey:CategoryID"`
-	Stock       int            `json:"stock" gorm:"default:0" validate:"gte=0"`
-	Price       float64        `json:"price" gorm:"default:0" validate:"gte=0"`
-	CategoryID  ID             `json:"category_id" gorm:"not null;type:uuid" validate:"required"`
-	ID          ID             `json:"id" gorm:"type:uuid"`
+	CreatedAt   time.Time `json:"created_at"`
+	UpdatedAt   time.Time `json:"updated_at"`
+	Name        string    `json:"name" gorm:"unique;not null"`
+	Description string    `json:"description" gorm:"not null;default:''"`
+	Orders      []Order   `json:"-" gorm:"many2many:order_products;"`
+	Category    Category  `json:"category" gorm:"foreignKey:CategoryID"`
+	Stock       int       `json:"stock" gorm:"default:0" validate:"gte=0"`
+	Price       float64   `json:"price" gorm:"default:0" validate:"gte=0"`
+	CategoryID  ID        `json:"category_id" gorm:"not null;type:uuid" validate:"required"`
+	ID          ID        `json:"id" gorm:"type:uuid"`
 }
 
 func NewProduct(payload Product) (*Product, error) {

@@ -14,7 +14,7 @@ import (
 
 // @title golerplate API
 // @version 1.0
-// @description golerplate API
+// @description GOlerplate is boilerpalte for GO
 // @termsOfService http://swagger.io/terms/
 // @contact.name Figarillo
 // @contact.email axel.leonardi.22@gmail.com
@@ -23,7 +23,7 @@ import (
 // @BasePath /api
 // @host localhost:8080
 func main() {
-	env, err := config.NewEnvConf("../.env")
+	env, err := config.NewEnvConf(".env")
 	if err != nil {
 		log.Fatalf("could not load config file: %v", err)
 	}

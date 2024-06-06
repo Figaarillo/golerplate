@@ -24,19 +24,20 @@ func NewProductHandler(r repository.ProductRepository) *ProductHandler {
 	}
 }
 
-// @Summary List products with pagination
-// @Description Get a list of products with pagination
+// ListAll godoc
+// @Summary List all products with pagination
+// @Description Get a list of all products with pagination
 // @Tags products
 // @Accept  json
 // @Produce  json
 // @Param offset query int true "Offset"
 // @Param limit query int true "Limit"
-// @Success 200 {array} entity.Product
+// @Success 200 {array} entity.Product "Products retrieved successfully"
 // @Router /api/products [get]
-func (h *ProductHandler) List(w http.ResponseWriter, r *http.Request) {
+func (h *ProductHandler) ListAll(w http.ResponseWriter, r *http.Request) {
 	offset, limit := utils.GetPagination(r)
 
-	products, err := h.usecase.List(offset, limit)
+	products, err := h.usecase.ListAll(offset, limit)
 	if err != nil {
 		utils.HandleHTTPError(w, err, http.StatusNotFound)
 		return
@@ -45,13 +46,14 @@ func (h *ProductHandler) List(w http.ResponseWriter, r *http.Request) {
 	utils.HandleHTTPResponse(w, "Products retrieved successfully", http.StatusOK, products)
 }
 
-// @Summary Get a product
-// @Description Get a product by ID
+// GetByID godoc
+// @Summary Get a product by ID
+// @Description Retrive a product using its ID
 // @Tags products
 // @Accept  json
 // @Produce  json
 // @Param id path int true "Product ID"
-// @Success 200 {object} entity.Product
+// @Success 200 {object} entity.Product "Product retrieved successfully"
 // @Router /api/products/{id} [get]
 func (h *ProductHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 	id, err := utils.GetURLParam(r, "id")
@@ -69,13 +71,14 @@ func (h *ProductHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 	utils.HandleHTTPResponse(w, "Product retrieved successfully", http.StatusOK, product)
 }
 
-// @Summary Create a product
-// @Description Create a new product
+// Create godoc
+// @Summary Create a new product
+// @Description Create a new product with provided data
 // @Tags products
 // @Accept  json
 // @Produce  json
-// @Param product body entity.Product true "Product"
-// @Success 201
+// @Param product body entity.Product true "Product data"
+// @Success 201 {object} entity.Product "Product created successfully"
 // @Router /api/products [post]
 func (h *ProductHandler) Create(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
@@ -100,14 +103,15 @@ func (h *ProductHandler) Create(w http.ResponseWriter, r *http.Request) {
 	utils.HandleHTTPResponse(w, "Product created successfully", http.StatusCreated, nil)
 }
 
-// @Summary Update a product
-// @Description Update a product
+// Update godoc
+// @Summary Update a product by ID
+// @Description Update an existing product by ID
 // @Tags products
 // @Accept  json
 // @Produce  json
 // @Param id path int true "Product ID"
-// @Param product body entity.Product true "Product"
-// @Success 200
+// @Param product body entity.Product true "Product data"
+// @Success 200 {object} entity.Product "Product updated successfully"
 // @Router /api/products/{id} [put]
 func (h *ProductHandler) Update(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
@@ -132,13 +136,14 @@ func (h *ProductHandler) Update(w http.ResponseWriter, r *http.Request) {
 	utils.HandleHTTPResponse(w, "Product updated successfully", http.StatusOK, nil)
 }
 
-// @Summary Delete a product
-// @Description Delete a product
+// Delete godoc
+// @Summary Delete a product by ID
+// @Description Delete an existing product using its ID
 // @Tags products
 // @Accept  json
 // @Produce  json
 // @Param id path int true "Product ID"
-// @Success 200
+// @Success 200 {object} entity.Product "Product deleted successfully"
 // @Router /api/products/{id} [delete]
 func (h *ProductHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	id, err := utils.GetURLParam(r, "id")
