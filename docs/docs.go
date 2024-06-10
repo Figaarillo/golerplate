@@ -197,7 +197,7 @@ const docTemplate = `{
         },
         "/api/clients": {
             "get": {
-                "description": "Get a list of all clients",
+                "description": "Get a list of all clients with pagination",
                 "consumes": [
                     "application/json"
                 ],
@@ -207,7 +207,7 @@ const docTemplate = `{
                 "tags": [
                     "clients"
                 ],
-                "summary": "List all clients",
+                "summary": "List all clients with pagination",
                 "parameters": [
                     {
                         "type": "integer",
@@ -226,7 +226,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Clients retrieved successfully",
                         "schema": {
                             "type": "array",
                             "items": {
@@ -237,7 +237,7 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "description": "Create a new client",
+                "description": "Create a new client with the provided data",
                 "consumes": [
                     "application/json"
                 ],
@@ -261,14 +261,17 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "201": {
-                        "description": "Created"
+                        "description": "Client created successfully",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Client"
+                        }
                     }
                 }
             }
         },
         "/api/clients/{id}": {
             "get": {
-                "description": "Get a client by ID",
+                "description": "Retrieve a client using its ID",
                 "consumes": [
                     "application/json"
                 ],
@@ -278,7 +281,7 @@ const docTemplate = `{
                 "tags": [
                     "clients"
                 ],
-                "summary": "Get a client",
+                "summary": "Get a client by ID",
                 "parameters": [
                     {
                         "type": "integer",
@@ -290,7 +293,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Client retrieved successfully",
                         "schema": {
                             "$ref": "#/definitions/entity.Client"
                         }
@@ -298,7 +301,7 @@ const docTemplate = `{
                 }
             },
             "put": {
-                "description": "Update a client",
+                "description": "Update an existing client by ID",
                 "consumes": [
                     "application/json"
                 ],
@@ -318,7 +321,7 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "description": "Client",
+                        "description": "Client data",
                         "name": "client",
                         "in": "body",
                         "required": true,
@@ -329,12 +332,15 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "Client updated successfully",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Client"
+                        }
                     }
                 }
             },
             "delete": {
-                "description": "Delete a client",
+                "description": "Delete an existing client using its ID",
                 "consumes": [
                     "application/json"
                 ],
@@ -344,7 +350,7 @@ const docTemplate = `{
                 "tags": [
                     "clients"
                 ],
-                "summary": "Delete a client",
+                "summary": "Delete a client by ID",
                 "parameters": [
                     {
                         "type": "integer",
@@ -356,7 +362,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "Client deleted successfully"
                     }
                 }
             }
@@ -437,7 +443,7 @@ const docTemplate = `{
         },
         "/api/orders/client/{id}": {
             "get": {
-                "description": "Retrive orders using its client ID",
+                "description": "Retrieve orders using its client ID",
                 "consumes": [
                     "application/json"
                 ],
@@ -463,7 +469,7 @@ const docTemplate = `{
         },
         "/api/orders/{id}": {
             "get": {
-                "description": "Retrive a order using its ID",
+                "description": "Retrieve a order using its ID",
                 "consumes": [
                     "application/json"
                 ],
@@ -493,7 +499,7 @@ const docTemplate = `{
                 }
             },
             "put": {
-                "description": "Set order status",
+                "description": "Set status of an order provided its ID",
                 "consumes": [
                     "application/json"
                 ],
@@ -532,7 +538,7 @@ const docTemplate = `{
                 }
             },
             "delete": {
-                "description": "Delete a order by its ID",
+                "description": "Delete an existing order using its ID",
                 "consumes": [
                     "application/json"
                 ],
@@ -561,7 +567,7 @@ const docTemplate = `{
         },
         "/api/products": {
             "get": {
-                "description": "Get a list of products with pagination",
+                "description": "Get a list of all products with pagination",
                 "consumes": [
                     "application/json"
                 ],
@@ -571,7 +577,7 @@ const docTemplate = `{
                 "tags": [
                     "products"
                 ],
-                "summary": "List products with pagination",
+                "summary": "List all products with pagination",
                 "parameters": [
                     {
                         "type": "integer",
@@ -590,7 +596,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Products retrieved successfully",
                         "schema": {
                             "type": "array",
                             "items": {
@@ -601,7 +607,7 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "description": "Create a new product",
+                "description": "Create a new product with provided data",
                 "consumes": [
                     "application/json"
                 ],
@@ -611,10 +617,10 @@ const docTemplate = `{
                 "tags": [
                     "products"
                 ],
-                "summary": "Create a product",
+                "summary": "Create a new product",
                 "parameters": [
                     {
-                        "description": "Product",
+                        "description": "Product data",
                         "name": "product",
                         "in": "body",
                         "required": true,
@@ -625,14 +631,17 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "201": {
-                        "description": "Created"
+                        "description": "Product created successfully",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Product"
+                        }
                     }
                 }
             }
         },
         "/api/products/{id}": {
             "get": {
-                "description": "Get a product by ID",
+                "description": "Retrive a product using its ID",
                 "consumes": [
                     "application/json"
                 ],
@@ -642,7 +651,7 @@ const docTemplate = `{
                 "tags": [
                     "products"
                 ],
-                "summary": "Get a product",
+                "summary": "Get a product by ID",
                 "parameters": [
                     {
                         "type": "integer",
@@ -654,7 +663,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Product retrieved successfully",
                         "schema": {
                             "$ref": "#/definitions/entity.Product"
                         }
@@ -662,7 +671,7 @@ const docTemplate = `{
                 }
             },
             "put": {
-                "description": "Update a product",
+                "description": "Update an existing product by ID",
                 "consumes": [
                     "application/json"
                 ],
@@ -672,7 +681,7 @@ const docTemplate = `{
                 "tags": [
                     "products"
                 ],
-                "summary": "Update a product",
+                "summary": "Update a product by ID",
                 "parameters": [
                     {
                         "type": "integer",
@@ -682,7 +691,7 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "description": "Product",
+                        "description": "Product data",
                         "name": "product",
                         "in": "body",
                         "required": true,
@@ -693,12 +702,15 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "Product updated successfully",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Product"
+                        }
                     }
                 }
             },
             "delete": {
-                "description": "Delete a product",
+                "description": "Delete an existing product using its ID",
                 "consumes": [
                     "application/json"
                 ],
@@ -708,7 +720,7 @@ const docTemplate = `{
                 "tags": [
                     "products"
                 ],
-                "summary": "Delete a product",
+                "summary": "Delete a product by ID",
                 "parameters": [
                     {
                         "type": "integer",
@@ -720,7 +732,10 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "Product deleted successfully",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Product"
+                        }
                     }
                 }
             }

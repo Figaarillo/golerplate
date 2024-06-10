@@ -224,7 +224,7 @@ paths:
     get:
       consumes:
       - application/json
-      description: Get a list of all clients
+      description: Get a list of all clients with pagination
       parameters:
       - description: Offset
         in: query
@@ -240,18 +240,18 @@ paths:
       - application/json
       responses:
         "200":
-          description: OK
+          description: Clients retrieved successfully
           schema:
             items:
               $ref: '#/definitions/entity.Client'
             type: array
-      summary: List all clients
+      summary: List all clients with pagination
       tags:
       - clients
     post:
       consumes:
       - application/json
-      description: Create a new client
+      description: Create a new client with the provided data
       parameters:
       - description: Client
         in: body
@@ -263,7 +263,9 @@ paths:
       - application/json
       responses:
         "201":
-          description: Created
+          description: Client created successfully
+          schema:
+            $ref: '#/definitions/entity.Client'
       summary: Create a client
       tags:
       - clients
@@ -271,7 +273,7 @@ paths:
     delete:
       consumes:
       - application/json
-      description: Delete a client
+      description: Delete an existing client using its ID
       parameters:
       - description: Client ID
         in: path
@@ -282,14 +284,14 @@ paths:
       - application/json
       responses:
         "200":
-          description: OK
-      summary: Delete a client
+          description: Client deleted successfully
+      summary: Delete a client by ID
       tags:
       - clients
     get:
       consumes:
       - application/json
-      description: Get a client by ID
+      description: Retrieve a client using its ID
       parameters:
       - description: Client ID
         in: path
@@ -300,23 +302,23 @@ paths:
       - application/json
       responses:
         "200":
-          description: OK
+          description: Client retrieved successfully
           schema:
             $ref: '#/definitions/entity.Client'
-      summary: Get a client
+      summary: Get a client by ID
       tags:
       - clients
     put:
       consumes:
       - application/json
-      description: Update a client
+      description: Update an existing client by ID
       parameters:
       - description: Client ID
         in: path
         name: id
         required: true
         type: integer
-      - description: Client
+      - description: Client data
         in: body
         name: client
         required: true
@@ -326,7 +328,9 @@ paths:
       - application/json
       responses:
         "200":
-          description: OK
+          description: Client updated successfully
+          schema:
+            $ref: '#/definitions/entity.Client'
       summary: Update a client
       tags:
       - clients
@@ -383,7 +387,7 @@ paths:
     delete:
       consumes:
       - application/json
-      description: Delete a order by its ID
+      description: Delete an existing order using its ID
       parameters:
       - description: order ID
         in: path
@@ -401,7 +405,7 @@ paths:
     get:
       consumes:
       - application/json
-      description: Retrive a order using its ID
+      description: Retrieve a order using its ID
       parameters:
       - description: Order ID
         in: path
@@ -421,7 +425,7 @@ paths:
     put:
       consumes:
       - application/json
-      description: Set order status
+      description: Set status of an order provided its ID
       parameters:
       - description: order ID
         in: path
@@ -448,7 +452,7 @@ paths:
     get:
       consumes:
       - application/json
-      description: Retrive orders using its client ID
+      description: Retrieve orders using its client ID
       produces:
       - application/json
       responses:
@@ -465,7 +469,7 @@ paths:
     get:
       consumes:
       - application/json
-      description: Get a list of products with pagination
+      description: Get a list of all products with pagination
       parameters:
       - description: Offset
         in: query
@@ -481,20 +485,20 @@ paths:
       - application/json
       responses:
         "200":
-          description: OK
+          description: Products retrieved successfully
           schema:
             items:
               $ref: '#/definitions/entity.Product'
             type: array
-      summary: List products with pagination
+      summary: List all products with pagination
       tags:
       - products
     post:
       consumes:
       - application/json
-      description: Create a new product
+      description: Create a new product with provided data
       parameters:
-      - description: Product
+      - description: Product data
         in: body
         name: product
         required: true
@@ -504,15 +508,17 @@ paths:
       - application/json
       responses:
         "201":
-          description: Created
-      summary: Create a product
+          description: Product created successfully
+          schema:
+            $ref: '#/definitions/entity.Product'
+      summary: Create a new product
       tags:
       - products
   /api/products/{id}:
     delete:
       consumes:
       - application/json
-      description: Delete a product
+      description: Delete an existing product using its ID
       parameters:
       - description: Product ID
         in: path
@@ -523,14 +529,16 @@ paths:
       - application/json
       responses:
         "200":
-          description: OK
-      summary: Delete a product
+          description: Product deleted successfully
+          schema:
+            $ref: '#/definitions/entity.Product'
+      summary: Delete a product by ID
       tags:
       - products
     get:
       consumes:
       - application/json
-      description: Get a product by ID
+      description: Retrive a product using its ID
       parameters:
       - description: Product ID
         in: path
@@ -541,23 +549,23 @@ paths:
       - application/json
       responses:
         "200":
-          description: OK
+          description: Product retrieved successfully
           schema:
             $ref: '#/definitions/entity.Product'
-      summary: Get a product
+      summary: Get a product by ID
       tags:
       - products
     put:
       consumes:
       - application/json
-      description: Update a product
+      description: Update an existing product by ID
       parameters:
       - description: Product ID
         in: path
         name: id
         required: true
         type: integer
-      - description: Product
+      - description: Product data
         in: body
         name: product
         required: true
@@ -567,8 +575,10 @@ paths:
       - application/json
       responses:
         "200":
-          description: OK
-      summary: Update a product
+          description: Product updated successfully
+          schema:
+            $ref: '#/definitions/entity.Product'
+      summary: Update a product by ID
       tags:
       - products
 swagger: "2.0"
