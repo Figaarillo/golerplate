@@ -14,7 +14,7 @@ func NewProductUseCase(r repository.ProductRepository) *ProductUseCase {
 }
 
 func (uc *ProductUseCase) ListAll(offset, limit int) ([]entity.Product, error) {
-	return uc.repository.List(offset, limit)
+	return uc.repository.ListAll(offset, limit)
 }
 
 func (uc *ProductUseCase) GetByID(id string) (entity.Product, error) {

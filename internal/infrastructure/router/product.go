@@ -22,7 +22,7 @@ func NewProductRouter(router *mux.Router, handler handler.ProductHandler) *Produ
 }
 
 func (p *ProductRouter) SetupRoutes() {
-	p.router.HandleFunc("", p.handler.List).Methods(http.MethodGet)
+	p.router.HandleFunc("", p.handler.ListAll).Methods(http.MethodGet)
 	p.router.HandleFunc("/{id}", p.handler.GetByID).Methods(http.MethodGet)
 	p.router.HandleFunc("", p.handler.Create).Methods(http.MethodPost)
 	p.router.HandleFunc("/{id}", p.handler.Update).Methods(http.MethodPut)
