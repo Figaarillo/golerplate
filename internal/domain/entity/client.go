@@ -54,9 +54,11 @@ func (c *Client) Update(payload Client) error {
 }
 
 func (c *Client) Validate() error {
-	if c.Email == "" || c.Password == "" || c.FirstName == "" || c.LastName == "" || c.Age == 0 {
-		return exeption.ErrMissingField
-	}
+	// if c.Email == "" || c.Password == "" || c.FirstName == "" || c.LastName == "" || c.Age == 0 {
+	// 	return exeption.ErrMissingField
+	// }
+	c.validateEmail()
+	c.validatePassword()
 
 	return nil
 }
@@ -72,4 +74,28 @@ func hashPassword(pass string) (string, error) {
 	}
 
 	return string(hash), nil
+}
+
+func (c *Client) validateEmail() error {
+	if err := utils.EnsureValueIsNotEmpty(c.Email); err != nil {
+		return err
+	}
+
+	if err := utils.EnsureValueIsAValidEmailFormat(c.Email); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (c *Client) validatePassword() error {
+	if err := utils.EnsureValueIsNotEmpty(c.Password); err != nil {
+		return err
+	}
+
+	if err := utils.EnsureValueIsValidPasswordComplexity(c.Password); err != nil {
+		return err
+	}
+
+	return nil
 }
