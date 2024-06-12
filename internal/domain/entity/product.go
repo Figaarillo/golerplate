@@ -3,7 +3,6 @@ package entity
 import (
 	"time"
 
-	"github.com/Figaarillo/golerplate/internal/domain/exeption"
 	"github.com/Figaarillo/golerplate/internal/share/utils"
 )
 
@@ -55,9 +54,11 @@ func (p *Product) Update(payload Product) error {
 }
 
 func (p *Product) Validate() error {
-	if p.Name == "" || p.Description == "" || p.CategoryID.String() == "" || p.Stock == 0 || p.Price == 0 {
-		return exeption.ErrMissingField
-	}
+	p.validateName()
+	p.validateDescription()
+	p.validateStock()
+	p.validatePrice()
+	p.validateCategoryID()
 
 	return nil
 }
