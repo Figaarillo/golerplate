@@ -61,3 +61,47 @@ func (p *Product) Validate() error {
 
 	return nil
 }
+
+func (p *Product) validateName() error {
+	if err := utils.EnsureValueIsNotEmpty(p.Name); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (p *Product) validateDescription() error {
+	if err := utils.EnsureValueIsNotEmpty(p.Description); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (p *Product) validateStock() error {
+	if err := utils.EnsureNumberValueIsPositive(float64(p.Stock)); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (p *Product) validatePrice() error {
+	if err := utils.EnsureNumberValueIsPositive(p.Price); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (p *Product) validateCategoryID() error {
+	if err := utils.EnsureValueIsNotEmpty(p.CategoryID.String()); err != nil {
+		return err
+	}
+
+	if err := utils.EnsureValueIsAValidUUID(string(p.CategoryID.String())); err != nil {
+		return err
+	}
+
+	return nil
+}

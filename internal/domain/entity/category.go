@@ -3,7 +3,6 @@ package entity
 import (
 	"time"
 
-	"github.com/Figaarillo/golerplate/internal/domain/exeption"
 	"github.com/Figaarillo/golerplate/internal/share/utils"
 )
 

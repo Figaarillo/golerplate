@@ -14,6 +14,14 @@ func EnsureValueIsNotEmpty(field string) error {
 	return nil
 }
 
+func EnsureNumberValueIsPositive(number float64) error {
+	if number < 0 {
+		return exeption.ErrMissingField
+	}
+
+	return nil
+}
+
 func EnsureValueIsAValidEmailFormat(email string) error {
 	if email[:1] == "@" || email[len(email)-1:] == "@" {
 		return exeption.ErrInvalidEmailAddress
@@ -37,6 +45,14 @@ func EnsureValueIsValidPasswordComplexity(password string) error {
 func EnsureValueIsValidAge(age int) error {
 	if age < 0 || age > 120 {
 		return exeption.ErrInvalidAge
+	}
+
+	return nil
+}
+
+func EnsureValueIsAValidUUID(uuid string) error {
+	if !regexp.MustCompile(`^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$`).MatchString(uuid) {
+		return exeption.ErrInvalidUUIDFormat
 	}
 
 	return nil
