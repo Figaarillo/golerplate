@@ -33,3 +33,11 @@ func EnsureValueIsValidPasswordComplexity(password string) error {
 
 	return nil
 }
+
+func EnsureValueIsValidAge(age int) error {
+	if age < 0 || age > 120 {
+		return exeption.ErrInvalidAge
+	}
+
+	return nil
+}
