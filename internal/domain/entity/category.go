@@ -45,8 +45,23 @@ func (c *Category) Update(payload Category) error {
 }
 
 func (c *Category) Validate() error {
-	if c.Name == "" || c.Description == "" {
-		return exeption.ErrMissingField
+	c.validateName()
+	c.validateDescription()
+
+	return nil
+}
+
+func (c *Category) validateName() error {
+	if err := utils.EnsureValueIsNotEmpty(c.Name); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (c *Category) validateDescription() error {
+	if err := utils.EnsureValueIsNotEmpty(c.Description); err != nil {
+		return err
 	}
 
 	return nil
