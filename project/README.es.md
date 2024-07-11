@@ -1,3 +1,5 @@
+[Español](./project/README.es.md) | [Inglés](README.md)
+
 # GOlerplate
 
 GOlerplate es una plantilla para aplicaciones web en Golang. Esto significa que puede s punto de partida para aplicaciones web en Golang, diseñado para facilitar el desarrollo con una arquitectura limpia y modular.
@@ -17,7 +19,7 @@ GOlerplate es una plantilla para aplicaciones web en Golang. Esto significa que 
 - [Docker Compose](https://docs.docker.com/compose/)
 - [Go](https://golang.org/doc/install) (opcional si deseas utilizar CLI)
 
-### Descarga el repositorio
+### Bajate el repositorio
 
 1. Clona el repositorio:
 
