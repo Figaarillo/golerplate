@@ -2,7 +2,7 @@
 
 # GOlerplate
 
-GOlerplate es una plantilla para aplicaciones web en Golang. Esto significa que puede s punto de partida para aplicaciones web en Golang, diseñado para facilitar el desarrollo con una arquitectura limpia y modular.
+GOlerplate es una plantilla para aplicaciones web en Golang. Esto significa que es punto de partida para aplicaciones web en Golang, diseñado para facilitar el desarrollo con una arquitectura limpia y modular.
 
 ## Tecnologías
 
