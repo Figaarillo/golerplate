@@ -1,68 +1,141 @@
+[English](README.md) | [Spanish](./project/README.es.md)
+
 # GOlerplate
 
-GOlerpalte is a boilerplate for Golang web applications. It is meant to be used as
-a starting point for new projects.
+GOlerplate is a template for web applications in Golang. This means it can be a starting point for web applications in Golang, designed to facilitate development with a clean and modular architecture.
 
-## Pre-requisites
+## Technologies
+
+- **Language**: Go
+- **Frameworks and Libraries**: Gorilla Mux, GORM
+- **Containers**: Docker, Docker Compose
+- **Documentation**: Swagger
+
+## Getting Started
+
+### Prerequisites
 
 - [Docker](https://docs.docker.com/get-docker/)
 - [Docker Compose](https://docs.docker.com/compose/)
-- [Go](https://golang.org/doc/install) (optional if you want to use the CLI)
+- [Go](https://golang.org/doc/install) (optional if you want to use CLI)
 
-## Get started
+### Clone the repository
 
-1. Clone the repository
+1. Clone the repository:
 
-```bash
-git clone https://github.com/figarillo/golerplate.git
-cd golerplate
-```
+    ```sh
+    git clone https://github.com/Figaarillo/golerplate.git
+    cd golerplate
+    ```
 
-2. Copy the `.env.example` to `.env`
+2. Copy the `.env.example` file to `.env`:
 
-```bash
-cp .env.example .env
-```
+    ```sh
+    cp .env.example .env
+    ```
 
-## How to use
+### Usage
 
-### Run Server And Database with Docker
+- Run the server and database through Docker
 
-```bash
-make docker.run
-```
+    ```sh
+    make docker.run
+    ```
 
-### Run server from local And Database with Docker
+- Run the server locally and the database with Docker
 
-```bash
-make run
-```
+    ```sh
+    make run
+    ```
 
-## Structure
+### How to run tests?
 
-```bash
+#### Unit Tests
+
+To run all unit tests:
+
+  ```sh
+  make test.unit
+  ```
+
+To run a single unit test:
+
+  ```sh
+  make test.unit.[entity_name]
+  ```
+
+For example, to run the unit test for category:
+
+  ```sh
+  make test.unit.category
+  ```
+
+#### Integration Tests
+
+To run all integration tests:
+
+  ```sh
+  make test.e2e
+  ```
+
+To run a single integration test:
+
+  ```sh
+  make test.e2e.[entity_name]
+  ```
+
+For example, to run the integration test for category:
+
+  ```sh
+  make test.e2e.category
+  ```
+
+## Project Structure
+
+```sh
 .
 ├── cmd
-│   └── api
-├── docs
+│   └── api                # Main entry point of the application
+├── docs                   # Swagger generated documentation
 ├── internal
-│   ├── application
-│   │   └── usecase
-│   ├── domain
-│   │   ├── entity
-│   │   ├── exeption
-│   │   └── repository
-│   ├── infrastructure
-│   │   ├── handler
-│   │   ├── middleware
-│   │   ├── repository
-│   │   └── router
-│   ├── setup
-│   ├── share
-│   │   ├── config
-│   │   ├── exeption
-│   │   ├── utils
-│   │   └── validation
-│   └── test
-└── scripts
+│   ├── application
+│   │   └── usecase        # Application use cases
+│   ├── domain
+│   │   ├── entity         # Domain entity definitions
+│   │   ├── exception      # Domain exception handling
+│   │   └── repository     # Repository interfaces
+│   ├── infrastructure
+│   │   ├── handler        # HTTP handlers
+│   │   ├── middleware     # HTTP middlewares
+│   │   ├── repository     # Repository implementations
+│   │   └── router         # Route definitions
+│   ├── setup              # Initial setup
+│   ├── share
+│   │   ├── config         # Shared configuration
+│   │   ├── exception      # Shared exception handling
+│   │   ├── utils          # Shared utilities
+│   │   └── validation     # Shared validations
+│   └── test               # Unit and integration tests
+└── scripts                # Automation scripts
 ```
+
+## Features
+
+- REST API: CRUD implementation for entities.
+- Tests: Unit and integration tests.
+- Documentation: API documentation with Swagger.
+- Architecture: Implements clean and hexagonal architecture principles.
+
+<!--## Contributing-->
+<!---->
+<!--If you want to contribute to the project, please follow these steps:-->
+<!---->
+<!--1. Fork the repository.-->
+<!--2. Create a branch (`git checkout -b feature/new-feature`).-->
+<!--3. Make your changes (`git commit -am 'Add new feature'`).-->
+<!--4. Push to the branch (`git push origin feature/new-feature`).-->
+<!--5. Create a new Pull Request.-->
+
+License
+
+This project is licensed under the MIT License.
