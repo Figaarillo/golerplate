@@ -1,4 +1,4 @@
-[Español](./project/README.es.md) | [Inglés](README.md)
+[Español](./project/README.es.md) | [Inglés](../README.md)
 
 # GOlerplate
 
@@ -17,7 +17,7 @@ GOlerplate es una plantilla para aplicaciones web en Golang. Esto significa que 
 
 - [Docker](https://docs.docker.com/get-docker/)
 - [Docker Compose](https://docs.docker.com/compose/)
-- [Go](https://golang.org/doc/install) (opcional si deseas utilizar CLI)
+- [Go](https://golang.org/doc/install) (opcional si deseas utilizar el proyecto de forma local)
 
 ### Bajate el repositorio
 
