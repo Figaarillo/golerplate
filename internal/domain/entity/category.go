@@ -3,19 +3,16 @@ package entity
 import (
 	"time"
 
-	"github.com/Figaarillo/golerplate/internal/domain/exeption"
-	"github.com/Figaarillo/golerplate/internal/share/utils"
-	"gorm.io/gorm"
+	"github.com/Figaarillo/golerplate/internal/shared/utils"
 )
 
 type Category struct {
-	CreatedAt   time.Time      `json:"created_at"`
-	UpdatedAt   time.Time      `json:"updated_at"`
-	DeletedAt   gorm.DeletedAt `json:"deleted_at" gorm:"index"`
-	Name        string         `json:"name" gorm:"unique"`
-	Description string         `json:"description" gorm:"not null;default:''"`
-	Products    []Product      `json:"products" gorm:"foreignKey:CategoryID"`
-	ID          ID             `json:"id"`
+	CreatedAt   time.Time `json:"created_at"`
+	UpdatedAt   time.Time `json:"updated_at"`
+	Name        string    `json:"name" gorm:"unique"`
+	Description string    `json:"description" gorm:"not null;default:''"`
+	Products    []Product `json:"products" gorm:"foreignKey:CategoryID"`
+	ID          ID        `json:"id"`
 }
 
 func NewCategory(payload Category) (*Category, error) {
@@ -47,8 +44,23 @@ func (c *Category) Update(payload Category) error {
 }
 
 func (c *Category) Validate() error {
-	if c.Name == "" || c.Description == "" {
-		return exeption.ErrMissingField
+	c.validateName()
+	c.validateDescription()
+
+	return nil
+}
+
+func (c *Category) validateName() error {
+	if err := utils.EnsureValueIsNotEmpty(c.Name); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (c *Category) validateDescription() error {
+	if err := utils.EnsureValueIsNotEmpty(c.Description); err != nil {
+		return err
 	}
 
 	return nil

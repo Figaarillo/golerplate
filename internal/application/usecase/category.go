@@ -3,7 +3,7 @@ package usecase
 import (
 	"github.com/Figaarillo/golerplate/internal/domain/entity"
 	"github.com/Figaarillo/golerplate/internal/domain/repository"
-	"github.com/Figaarillo/golerplate/internal/share/exeption"
+	"github.com/Figaarillo/golerplate/internal/shared/exeption"
 )
 
 type CategoryUseCase struct {

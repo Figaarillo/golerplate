@@ -25,7 +25,7 @@ const docTemplate = `{
     "paths": {
         "/api/categories": {
             "get": {
-                "description": "Get a list of all categories",
+                "description": "Get a list of all categories with pagination",
                 "consumes": [
                     "application/json"
                 ],
@@ -35,7 +35,7 @@ const docTemplate = `{
                 "tags": [
                     "categories"
                 ],
-                "summary": "List all categories",
+                "summary": "List all categories with pagination",
                 "parameters": [
                     {
                         "type": "integer",
@@ -54,12 +54,18 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "Categories retrieved successfully",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/entity.Category"
+                            }
+                        }
                     }
                 }
             },
             "post": {
-                "description": "Create a new category",
+                "description": "Create a new category with the provided data",
                 "consumes": [
                     "application/json"
                 ],
@@ -69,10 +75,10 @@ const docTemplate = `{
                 "tags": [
                     "categories"
                 ],
-                "summary": "Create a category",
+                "summary": "Create a new category",
                 "parameters": [
                     {
-                        "description": "Category",
+                        "description": "Category data",
                         "name": "category",
                         "in": "body",
                         "required": true,
@@ -83,14 +89,17 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "201": {
-                        "description": "Created"
+                        "description": "Category created successfully",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Category"
+                        }
                     }
                 }
             }
         },
         "/api/categories/{id}": {
             "get": {
-                "description": "Get a category by ID",
+                "description": "Retrieve a category using its ID",
                 "consumes": [
                     "application/json"
                 ],
@@ -100,7 +109,7 @@ const docTemplate = `{
                 "tags": [
                     "categories"
                 ],
-                "summary": "Get a category",
+                "summary": "Get a category by ID",
                 "parameters": [
                     {
                         "type": "integer",
@@ -112,12 +121,15 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "Category retrieved successfully",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Category"
+                        }
                     }
                 }
             },
             "put": {
-                "description": "Update a category",
+                "description": "Update an existing category by ID",
                 "consumes": [
                     "application/json"
                 ],
@@ -127,7 +139,7 @@ const docTemplate = `{
                 "tags": [
                     "categories"
                 ],
-                "summary": "Update a category",
+                "summary": "Update a category by ID",
                 "parameters": [
                     {
                         "type": "integer",
@@ -137,7 +149,7 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "description": "Category",
+                        "description": "Category data",
                         "name": "category",
                         "in": "body",
                         "required": true,
@@ -148,12 +160,15 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "Category updated successfully",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Category"
+                        }
                     }
                 }
             },
             "delete": {
-                "description": "Delete a category",
+                "description": "Delete an existing category using its ID",
                 "consumes": [
                     "application/json"
                 ],
@@ -163,7 +178,7 @@ const docTemplate = `{
                 "tags": [
                     "categories"
                 ],
-                "summary": "Delete a category",
+                "summary": "Delete a category by ID",
                 "parameters": [
                     {
                         "type": "integer",
@@ -175,14 +190,14 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "Category deleted successfully"
                     }
                 }
             }
         },
         "/api/clients": {
             "get": {
-                "description": "Get a list of all clients",
+                "description": "Get a list of all clients with pagination",
                 "consumes": [
                     "application/json"
                 ],
@@ -192,7 +207,7 @@ const docTemplate = `{
                 "tags": [
                     "clients"
                 ],
-                "summary": "List all clients",
+                "summary": "List all clients with pagination",
                 "parameters": [
                     {
                         "type": "integer",
@@ -211,7 +226,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Clients retrieved successfully",
                         "schema": {
                             "type": "array",
                             "items": {
@@ -222,7 +237,7 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "description": "Create a new client",
+                "description": "Create a new client with the provided data",
                 "consumes": [
                     "application/json"
                 ],
@@ -246,14 +261,17 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "201": {
-                        "description": "Created"
+                        "description": "Client created successfully",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Client"
+                        }
                     }
                 }
             }
         },
         "/api/clients/{id}": {
             "get": {
-                "description": "Get a client by ID",
+                "description": "Retrieve a client using its ID",
                 "consumes": [
                     "application/json"
                 ],
@@ -263,7 +281,7 @@ const docTemplate = `{
                 "tags": [
                     "clients"
                 ],
-                "summary": "Get a client",
+                "summary": "Get a client by ID",
                 "parameters": [
                     {
                         "type": "integer",
@@ -275,7 +293,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Client retrieved successfully",
                         "schema": {
                             "$ref": "#/definitions/entity.Client"
                         }
@@ -283,7 +301,7 @@ const docTemplate = `{
                 }
             },
             "put": {
-                "description": "Update a client",
+                "description": "Update an existing client by ID",
                 "consumes": [
                     "application/json"
                 ],
@@ -303,7 +321,7 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "description": "Client",
+                        "description": "Client data",
                         "name": "client",
                         "in": "body",
                         "required": true,
@@ -314,12 +332,15 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "Client updated successfully",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Client"
+                        }
                     }
                 }
             },
             "delete": {
-                "description": "Delete a client",
+                "description": "Delete an existing client using its ID",
                 "consumes": [
                     "application/json"
                 ],
@@ -329,7 +350,7 @@ const docTemplate = `{
                 "tags": [
                     "clients"
                 ],
-                "summary": "Delete a client",
+                "summary": "Delete a client by ID",
                 "parameters": [
                     {
                         "type": "integer",
@@ -341,14 +362,14 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "Client deleted successfully"
                     }
                 }
             }
         },
-        "/api/products": {
+        "/api/orders": {
             "get": {
-                "description": "Get a list of products with pagination",
+                "description": "Get a list of orders with pagination",
                 "consumes": [
                     "application/json"
                 ],
@@ -356,9 +377,9 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "products"
+                    "orders"
                 ],
-                "summary": "List products with pagination",
+                "summary": "List orders with pagination",
                 "parameters": [
                     {
                         "type": "integer",
@@ -377,7 +398,205 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Orders retrieved successfully",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/entity.Order"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a new order with the provided data",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "orders"
+                ],
+                "summary": "Create a new order",
+                "parameters": [
+                    {
+                        "description": "Order data",
+                        "name": "order",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.Order"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Order created successfully",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Order"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/orders/client/{id}": {
+            "get": {
+                "description": "Retrieve orders using its client ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "orders"
+                ],
+                "summary": "Get orders by client ID",
+                "responses": {
+                    "200": {
+                        "description": "Orders retrieved successfully",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/entity.Order"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/orders/{id}": {
+            "get": {
+                "description": "Retrieve a order using its ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "orders"
+                ],
+                "summary": "Get a order by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Order ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Order retrieved successfully",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Order"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Set status of an order provided its ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "orders"
+                ],
+                "summary": "Set status",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "order ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Order data",
+                        "name": "order",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.Order"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Order status updated successfully",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Order"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete an existing order using its ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "orders"
+                ],
+                "summary": "Delete a order",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "order ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Order deleted successfully"
+                    }
+                }
+            }
+        },
+        "/api/products": {
+            "get": {
+                "description": "Get a list of all products with pagination",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "products"
+                ],
+                "summary": "List all products with pagination",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Offset",
+                        "name": "offset",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Limit",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Products retrieved successfully",
                         "schema": {
                             "type": "array",
                             "items": {
@@ -388,7 +607,7 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "description": "Create a new product",
+                "description": "Create a new product with provided data",
                 "consumes": [
                     "application/json"
                 ],
@@ -398,10 +617,10 @@ const docTemplate = `{
                 "tags": [
                     "products"
                 ],
-                "summary": "Create a product",
+                "summary": "Create a new product",
                 "parameters": [
                     {
-                        "description": "Product",
+                        "description": "Product data",
                         "name": "product",
                         "in": "body",
                         "required": true,
@@ -412,14 +631,17 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "201": {
-                        "description": "Created"
+                        "description": "Product created successfully",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Product"
+                        }
                     }
                 }
             }
         },
         "/api/products/{id}": {
             "get": {
-                "description": "Get a product by ID",
+                "description": "Retrive a product using its ID",
                 "consumes": [
                     "application/json"
                 ],
@@ -429,7 +651,7 @@ const docTemplate = `{
                 "tags": [
                     "products"
                 ],
-                "summary": "Get a product",
+                "summary": "Get a product by ID",
                 "parameters": [
                     {
                         "type": "integer",
@@ -441,7 +663,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Product retrieved successfully",
                         "schema": {
                             "$ref": "#/definitions/entity.Product"
                         }
@@ -449,7 +671,7 @@ const docTemplate = `{
                 }
             },
             "put": {
-                "description": "Update a product",
+                "description": "Update an existing product by ID",
                 "consumes": [
                     "application/json"
                 ],
@@ -459,7 +681,7 @@ const docTemplate = `{
                 "tags": [
                     "products"
                 ],
-                "summary": "Update a product",
+                "summary": "Update a product by ID",
                 "parameters": [
                     {
                         "type": "integer",
@@ -469,7 +691,7 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "description": "Product",
+                        "description": "Product data",
                         "name": "product",
                         "in": "body",
                         "required": true,
@@ -480,12 +702,15 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "Product updated successfully",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Product"
+                        }
                     }
                 }
             },
             "delete": {
-                "description": "Delete a product",
+                "description": "Delete an existing product using its ID",
                 "consumes": [
                     "application/json"
                 ],
@@ -495,7 +720,7 @@ const docTemplate = `{
                 "tags": [
                     "products"
                 ],
-                "summary": "Delete a product",
+                "summary": "Delete a product by ID",
                 "parameters": [
                     {
                         "type": "integer",
@@ -507,7 +732,10 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "Product deleted successfully",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Product"
+                        }
                     }
                 }
             }
@@ -515,7 +743,30 @@ const docTemplate = `{
     },
     "definitions": {
         "entity.Category": {
-            "type": "object"
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "products": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.Product"
+                    }
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
         },
         "entity.Client": {
             "type": "object",
@@ -559,6 +810,7 @@ const docTemplate = `{
         "entity.Order": {
             "type": "object",
             "required": [
+                "client_id",
                 "status"
             ],
             "properties": {
@@ -637,8 +889,8 @@ var SwaggerInfo = &swag.Spec{
 	Host:             "localhost:8080",
 	BasePath:         "/api",
 	Schemes:          []string{},
-	Title:            "Ecomerce API",
-	Description:      "Ecomerce API",
+	Title:            "golerplate API",
+	Description:      "GOlerplate is boilerpalte for GO",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

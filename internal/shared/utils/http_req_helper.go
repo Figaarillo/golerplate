@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/Figaarillo/golerplate/internal/share/exeption"
+	"github.com/Figaarillo/golerplate/internal/shared/exeption"
 	"github.com/gorilla/mux"
 )
 

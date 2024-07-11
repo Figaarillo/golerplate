@@ -13,7 +13,7 @@ func NewProductGorm(db *gorm.DB) *ProductGorm {
 	return &ProductGorm{db: db}
 }
 
-func (p *ProductGorm) List(offset, limit int) ([]entity.Product, error) {
+func (p *ProductGorm) ListAll(offset, limit int) ([]entity.Product, error) {
 	var products []entity.Product
 	if result := p.db.Model(&entity.Product{}).
 		Offset(offset).Limit(limit).

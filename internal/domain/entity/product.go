@@ -3,23 +3,20 @@ package entity
 import (
 	"time"
 
-	"github.com/Figaarillo/golerplate/internal/domain/exeption"
-	"github.com/Figaarillo/golerplate/internal/share/utils"
-	"gorm.io/gorm"
+	"github.com/Figaarillo/golerplate/internal/shared/utils"
 )
 
 type Product struct {
-	CreatedAt   time.Time      `json:"created_at"`
-	UpdatedAt   time.Time      `json:"updated_at"`
-	DeletedAt   gorm.DeletedAt `json:"deleted_at" gorm:"index"`
-	Name        string         `json:"name" gorm:"unique;not null"`
-	Description string         `json:"description" gorm:"not null;default:''"`
-	Orders      []Order        `json:"-" gorm:"many2many:order_products;"`
-	Category    Category       `json:"category" gorm:"foreignKey:CategoryID"`
-	Stock       int            `json:"stock" gorm:"default:0" validate:"gte=0"`
-	Price       float64        `json:"price" gorm:"default:0" validate:"gte=0"`
-	CategoryID  ID             `json:"category_id" gorm:"not null;type:uuid" validate:"required"`
-	ID          ID             `json:"id" gorm:"type:uuid"`
+	CreatedAt   time.Time `json:"created_at"`
+	UpdatedAt   time.Time `json:"updated_at"`
+	Name        string    `json:"name" gorm:"unique;not null"`
+	Description string    `json:"description" gorm:"not null;default:''"`
+	Orders      []Order   `json:"-" gorm:"many2many:order_products;"`
+	Category    Category  `json:"category" gorm:"foreignKey:CategoryID"`
+	Stock       int       `json:"stock" gorm:"default:0" validate:"gte=0"`
+	Price       float64   `json:"price" gorm:"default:0" validate:"gte=0"`
+	CategoryID  ID        `json:"category_id" gorm:"not null;type:uuid" validate:"required"`
+	ID          ID        `json:"id" gorm:"type:uuid"`
 }
 
 func NewProduct(payload Product) (*Product, error) {
@@ -57,8 +54,54 @@ func (p *Product) Update(payload Product) error {
 }
 
 func (p *Product) Validate() error {
-	if p.Name == "" || p.Description == "" || p.CategoryID.String() == "" || p.Stock == 0 || p.Price == 0 {
-		return exeption.ErrMissingField
+	p.validateName()
+	p.validateDescription()
+	p.validateStock()
+	p.validatePrice()
+	p.validateCategoryID()
+
+	return nil
+}
+
+func (p *Product) validateName() error {
+	if err := utils.EnsureValueIsNotEmpty(p.Name); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (p *Product) validateDescription() error {
+	if err := utils.EnsureValueIsNotEmpty(p.Description); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (p *Product) validateStock() error {
+	if err := utils.EnsureNumberValueIsPositive(float64(p.Stock)); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (p *Product) validatePrice() error {
+	if err := utils.EnsureNumberValueIsPositive(p.Price); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (p *Product) validateCategoryID() error {
+	if err := utils.EnsureValueIsNotEmpty(p.CategoryID.String()); err != nil {
+		return err
+	}
+
+	if err := utils.EnsureValueIsAValidUUID(string(p.CategoryID.String())); err != nil {
+		return err
 	}
 
 	return nil
