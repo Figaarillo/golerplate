@@ -7,14 +7,14 @@ import (
 )
 
 type Order struct {
-	CreatedAt time.Time      `json:"created_at"`
-	UpdatedAt time.Time      `json:"updated_at"`
-	Status    string         `json:"status" gorm:"not null" validate:"required"`
-	Products  []Product      `json:"products" gorm:"many2many:order_products;"`
-	Client    Client         `json:"client" gorm:"foreignKey:ClientID"`
-	Total     float64        `json:"total" gorm:"not null;default:0"`
-	ClientID  ID             `json:"client_id" gorm:"not null;type:uuid" validate:"required"`
-	ID        ID             `json:"id" gorm:"type:uuid"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+	Status    string    `json:"status" gorm:"not null" validate:"required"`
+	Products  []Product `json:"products" gorm:"many2many:order_products;"`
+	Client    Client    `json:"client" gorm:"foreignKey:ClientID"`
+	Total     float64   `json:"total" gorm:"not null;default:0"`
+	ClientID  ID        `json:"client_id" gorm:"not null;type:uuid" validate:"required"`
+	ID        ID        `json:"id" gorm:"type:uuid"`
 }
 
 func NewOrder(payload Order) (*Order, error) {
@@ -46,4 +46,16 @@ func calculateTotal(products []Product) float64 {
 	}
 
 	return total
+}
+
+func (o *Order) AddProduct(product Product, quantity int) {
+	if err := product.Validate(); err != nil {
+		return
+	}
+
+	// if err := product.UpdateStock(quantity); err != nil {
+	// 	return
+	// }
+
+	o.Products = append(o.Products, product)
 }

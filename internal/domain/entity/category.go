@@ -3,7 +3,7 @@ package entity
 import (
 	"time"
 
-	"github.com/Figaarillo/golerplate/internal/share/utils"
+	"github.com/Figaarillo/golerplate/internal/shared/utils"
 )
 
 type Category struct {

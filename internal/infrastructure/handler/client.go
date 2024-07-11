@@ -7,7 +7,7 @@ import (
 	"github.com/Figaarillo/golerplate/internal/application/usecase"
 	"github.com/Figaarillo/golerplate/internal/domain/entity"
 	"github.com/Figaarillo/golerplate/internal/domain/repository"
-	"github.com/Figaarillo/golerplate/internal/share/utils"
+	"github.com/Figaarillo/golerplate/internal/shared/utils"
 	"github.com/go-playground/validator/v10"
 )
 

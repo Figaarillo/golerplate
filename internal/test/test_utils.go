@@ -7,8 +7,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/Figaarillo/golerplate/internal/share/config"
-	"github.com/Figaarillo/golerplate/internal/share/utils"
+	"github.com/Figaarillo/golerplate/internal/shared/config"
+	"github.com/Figaarillo/golerplate/internal/shared/utils"
 	"github.com/gorilla/mux"
 	"gorm.io/gorm"
 )

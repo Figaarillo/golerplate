@@ -6,7 +6,7 @@ import (
 	"net/http"
 
 	"github.com/Figaarillo/golerplate/internal/setup"
-	"github.com/Figaarillo/golerplate/internal/share/config"
+	"github.com/Figaarillo/golerplate/internal/shared/config"
 
 	_ "github.com/Figaarillo/golerplate/docs" // load API Docs files (Swagger)
 	_ "github.com/joho/godotenv/autoload"     // load .env file automatically

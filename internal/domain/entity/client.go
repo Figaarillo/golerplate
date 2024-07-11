@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/Figaarillo/golerplate/internal/domain/exeption"
-	"github.com/Figaarillo/golerplate/internal/share/utils"
+	"github.com/Figaarillo/golerplate/internal/shared/utils"
 	"golang.org/x/crypto/bcrypt"
 )
 
