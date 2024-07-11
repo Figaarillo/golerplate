@@ -23,3 +23,6 @@ go.work.sum
 
 # others
 notes/
+
+# Env file
+.env
