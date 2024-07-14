@@ -1,4 +1,4 @@
-package setup
+package bootstrap
 
 import (
 	"github.com/Figaarillo/golerplate/internal/infrastructure/router"

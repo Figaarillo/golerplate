@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/Figaarillo/golerplate/internal/setup"
+	"github.com/Figaarillo/golerplate/internal/bootstrap"
 	"github.com/Figaarillo/golerplate/internal/shared/config"
 
 	_ "github.com/Figaarillo/golerplate/docs" // load API Docs files (Swagger)
@@ -37,10 +37,10 @@ func main() {
 		w.Write([]byte("Hello, World!"))
 	})
 
-	setup.NewCategory(router, db)
-	setup.NewClient(router, db)
-	setup.NewProduct(router, db)
-	setup.NewSwagger(router)
+	bootstrap.NewCategory(router, db)
+	bootstrap.NewClient(router, db)
+	bootstrap.NewProduct(router, db)
+	bootstrap.NewSwagger(router)
 
 	log.Printf("Server is running!🔥 Go to http://localhost:%d/\n", PORT)
 	http.ListenAndServe(fmt.Sprintf(":%d", PORT), router)

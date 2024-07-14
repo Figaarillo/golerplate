@@ -1,4 +1,4 @@
-package setup
+package bootstrap
 
 import (
 	"github.com/Figaarillo/golerplate/internal/domain/entity"
@@ -9,13 +9,13 @@ import (
 	"gorm.io/gorm"
 )
 
-func NewClient(initRouter *mux.Router, db *gorm.DB) {
-	db.AutoMigrate(&entity.Client{})
+func NewProduct(initRouter *mux.Router, db *gorm.DB) {
+	db.AutoMigrate(&entity.Product{})
 
-	clientRepository := repository.NewClientGorm(db)
+	productRepository := repository.NewProductGorm(db)
 
-	clientHandler := handler.NewClientHandler(clientRepository)
+	productHandler := handler.NewProductHandler(productRepository)
 
-	clientRouter := router.NewClientRouter(initRouter, *clientHandler)
-	clientRouter.SetupRoutes()
+	productRouter := router.NewProductRouter(initRouter, *productHandler)
+	productRouter.SetupRoutes()
 }
