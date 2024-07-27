@@ -1,4 +1,4 @@
-[English](README.md) | [Spanish](./project/README.es.md)
+[English](./README.md) | [Spanish](./README.es.md)
 
 # GOlerplate
 
@@ -23,30 +23,30 @@ GOlerplate is a template for web applications in Golang. This means it can be a 
 
 1. Clone the repository:
 
-    ```sh
-    git clone https://github.com/Figaarillo/golerplate.git
-    cd golerplate
-    ```
+```sh
+git clone https://github.com/Figaarillo/golerplate.git
+cd golerplate
+```
 
 2. Copy the `.env.example` file to `.env`:
 
-    ```sh
-    cp .env.example .env
-    ```
+```sh
+cp .env.example .env
+```
 
 ### Usage
 
 - Run the server and database through Docker
 
-    ```sh
-    make docker.run
-    ```
+```sh
+make docker.run
+```
 
 - Run the server locally and the database with Docker
 
-    ```sh
-    make run
-    ```
+```sh
+make run
+```
 
 ### How to run tests?
 
@@ -54,41 +54,41 @@ GOlerplate is a template for web applications in Golang. This means it can be a 
 
 To run all unit tests:
 
-  ```sh
-  make test.unit
-  ```
+```sh
+make test.unit
+```
 
 To run a single unit test:
 
-  ```sh
-  make test.unit.[entity_name]
-  ```
+```sh
+make test.unit.[entity_name]
+```
 
 For example, to run the unit test for category:
 
-  ```sh
-  make test.unit.category
-  ```
+```sh
+make test.unit.category
+```
 
 #### Integration Tests
 
 To run all integration tests:
 
-  ```sh
-  make test.e2e
-  ```
+```sh
+make test.e2e
+```
 
 To run a single integration test:
 
-  ```sh
-  make test.e2e.[entity_name]
-  ```
+```sh
+make test.e2e.[entity_name]
+```
 
 For example, to run the integration test for category:
 
-  ```sh
-  make test.e2e.category
-  ```
+```sh
+make test.e2e.category
+```
 
 ## Project Structure
 
