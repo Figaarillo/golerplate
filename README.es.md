@@ -126,6 +126,17 @@ make test.e2e.category
 - **Documentació**n: Documentación de API con Swagger.
 - **Arquitectura**: Implementa principios de arquitectura limpia y hexagonal.
 
+## To-do
+
+- [ ] Agregar manejo de autenticación  integrando OAuth2.
+- [ ] Mejorar la performance al momento de compilar la aplicaicón con Docker.
+- [ ] Mejorar la documentación de Swagger.
+- [ ] Mejorar los test unitarios agregando más casos de prueba.
+- [ ] Mejorar el manejo de errores, agregando más excepciones, mensajes de error y etc.
+- [ ] Agregar goroutines para mejorar la eficiencia de la aplicación.
+- [ ] Agregar manejo de logs.
+- [ ] Integrar otros Frameworks de servidor y de Base de Datos
+
 <!--## Contribuir-->
 <!---->
 <!--Si deseas contribuir al proyecto, por favor, sigue estos pasos:-->
