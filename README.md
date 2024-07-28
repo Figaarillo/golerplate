@@ -147,6 +147,6 @@ make test.e2e.category
 <!--4. Push to the branch (`git push origin feature/new-feature`).-->
 <!--5. Create a new Pull Request.-->
 
-License
+## License
 
 This project is licensed under the MIT License.
