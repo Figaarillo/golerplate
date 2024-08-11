@@ -7,21 +7,21 @@ import (
 	"github.com/gorilla/mux"
 )
 
-type ClientRouter struct {
+type UserRouter struct {
 	router  *mux.Router
-	handler handler.ClientHandler
+	handler handler.UserHandler
 }
 
-func NewClientRouter(router *mux.Router, handler handler.ClientHandler) *ClientRouter {
-	subroutes := router.PathPrefix("/api/clients").Subrouter()
+func NewUserRouter(router *mux.Router, handler handler.UserHandler) *UserRouter {
+	subroutes := router.PathPrefix("/api/users").Subrouter()
 
-	return &ClientRouter{
+	return &UserRouter{
 		router:  subroutes,
 		handler: handler,
 	}
 }
 
-func (c *ClientRouter) SetupRoutes() {
+func (c *UserRouter) SetupRoutes() {
 	c.router.HandleFunc("", c.handler.ListAll).Methods(http.MethodGet)
 	c.router.HandleFunc("/{id}", c.handler.GetByID).Methods(http.MethodGet)
 	c.router.HandleFunc("", c.handler.Create).Methods(http.MethodPost)
