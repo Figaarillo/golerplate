@@ -11,9 +11,9 @@ type Order struct {
 	UpdatedAt time.Time `json:"updated_at"`
 	Status    string    `json:"status" gorm:"not null" validate:"required"`
 	Products  []Product `json:"products" gorm:"many2many:order_products;"`
-	Client    Client    `json:"client" gorm:"foreignKey:ClientID"`
+	User      User      `json:"user" gorm:"foreignKey:UserID"`
 	Total     float64   `json:"total" gorm:"not null;default:0"`
-	ClientID  ID        `json:"client_id" gorm:"not null;type:uuid" validate:"required"`
+	UserID    ID        `json:"user_id" gorm:"not null;type:uuid" validate:"required"`
 	ID        ID        `json:"id" gorm:"type:uuid"`
 }
 
@@ -21,7 +21,7 @@ func NewOrder(payload Order) (*Order, error) {
 	order := &Order{
 		ID:       NewID(),
 		Total:    calculateTotal(payload.Products),
-		Client:   payload.Client,
+		User:     payload.User,
 		Products: payload.Products,
 		Status:   "pending",
 	}

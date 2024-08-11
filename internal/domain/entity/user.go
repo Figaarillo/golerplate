@@ -8,20 +8,20 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type Client struct {
+type User struct {
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 	Email     string    `json:"email" gorm:"unique;not null" validate:"required,email,unique"`
 	Password  string    `json:"-" gorm:"not null" validate:"required,min=12"`
 	FirstName string    `json:"firstname" gorm:"not null" validate:"required,alpha"`
 	LastName  string    `json:"lastname" gorm:"not null" validate:"required,alpha"`
-	Orders    []Order   `json:"orders,omitempty" gorm:"foreignKey:ClientID;OnDelete:CASCADE;"`
+	Orders    []Order   `json:"orders,omitempty" gorm:"foreignKey:UserID;OnDelete:CASCADE;"`
 	Age       int       `json:"age" validate:"gte=0,lte=120"`
 	ID        ID        `json:"id"`
 }
 
-func NewClient(payload Client) (*Client, error) {
-	client := &Client{
+func NewUser(payload User) (*User, error) {
+	user := &User{
 		ID:        NewID(),
 		Email:     payload.Email,
 		FirstName: payload.FirstName,
@@ -35,12 +35,12 @@ func NewClient(payload Client) (*Client, error) {
 	if err != nil {
 		return nil, err
 	}
-	client.Password = pass
+	user.Password = pass
 
-	return client, nil
+	return user, nil
 }
 
-func (c *Client) Update(payload Client) error {
+func (c *User) Update(payload User) error {
 	utils.AssignIfNotEmpty(&c.FirstName, payload.FirstName)
 	utils.AssignIfNotEmpty(&c.LastName, payload.LastName)
 	utils.AssignIfNonZero(&c.Age, payload.Age)
@@ -53,7 +53,7 @@ func (c *Client) Update(payload Client) error {
 	return nil
 }
 
-func (c *Client) Validate() error {
+func (c *User) Validate() error {
 	c.validateEmail()
 	c.validatePassword()
 	c.validateFirstName()
@@ -63,7 +63,7 @@ func (c *Client) Validate() error {
 	return nil
 }
 
-func (c *Client) ComparePassword(password string) error {
+func (c *User) ComparePassword(password string) error {
 	return bcrypt.CompareHashAndPassword([]byte(c.Password), []byte(password))
 }
 
@@ -76,7 +76,7 @@ func hashPassword(pass string) (string, error) {
 	return string(hash), nil
 }
 
-func (c *Client) validateEmail() error {
+func (c *User) validateEmail() error {
 	if err := utils.EnsureValueIsNotEmpty(c.Email); err != nil {
 		return err
 	}
@@ -88,7 +88,7 @@ func (c *Client) validateEmail() error {
 	return nil
 }
 
-func (c *Client) validatePassword() error {
+func (c *User) validatePassword() error {
 	if err := utils.EnsureValueIsNotEmpty(c.Password); err != nil {
 		return err
 	}
@@ -100,7 +100,7 @@ func (c *Client) validatePassword() error {
 	return nil
 }
 
-func (c *Client) validateFirstName() error {
+func (c *User) validateFirstName() error {
 	if err := utils.EnsureValueIsNotEmpty(c.FirstName); err != nil {
 		return err
 	}
@@ -108,7 +108,7 @@ func (c *Client) validateFirstName() error {
 	return nil
 }
 
-func (c *Client) validateLastName() error {
+func (c *User) validateLastName() error {
 	if err := utils.EnsureValueIsNotEmpty(c.LastName); err != nil {
 		return err
 	}
@@ -116,7 +116,7 @@ func (c *Client) validateLastName() error {
 	return nil
 }
 
-func (c *Client) validateAge() error {
+func (c *User) validateAge() error {
 	if err := utils.EnsureValueIsValidAge(c.Age); err != nil {
 		return err
 	}
