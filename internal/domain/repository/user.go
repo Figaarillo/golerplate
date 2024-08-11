@@ -2,7 +2,7 @@ package repository
 
 import "github.com/Figaarillo/golerplate/internal/domain/entity"
 
-type ClientRepository interface {
+type UserRepository interface {
 	ListAll(offset, limit int) ([]entity.User, error)
 	GetByID(id entity.ID) (entity.User, error)
 	Create(client *entity.User) (entity.User, error)
