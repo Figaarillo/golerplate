@@ -9,13 +9,13 @@ import (
 	"gorm.io/gorm"
 )
 
-func NewClient(initRouter *mux.Router, db *gorm.DB) {
-	db.AutoMigrate(&entity.Client{})
+func NewUser(initRouter *mux.Router, db *gorm.DB) {
+	db.AutoMigrate(&entity.User{})
 
-	clientRepository := repository.NewClientGorm(db)
+	repository := repository.NewUserGorm(db)
 
-	clientHandler := handler.NewClientHandler(clientRepository)
+	handler := handler.NewUserHandler(repository)
 
-	clientRouter := router.NewClientRouter(initRouter, *clientHandler)
-	clientRouter.SetupRoutes()
+	router := router.NewUserRouter(initRouter, *handler)
+	router.SetupRoutes()
 }
