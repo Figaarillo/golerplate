@@ -5,19 +5,19 @@ import (
 	"github.com/Figaarillo/golerplate/internal/domain/repository"
 )
 
-type ClientUseCase struct {
-	repository repository.ClientRepository
+type UserUseCase struct {
+	repository repository.UserRepository
 }
 
-func NewClientUseCase(r repository.ClientRepository) *ClientUseCase {
-	return &ClientUseCase{repository: r}
+func NewUserUseCase(r repository.UserRepository) *UserUseCase {
+	return &UserUseCase{repository: r}
 }
 
-func (uc *ClientUseCase) ListAll(offset, limit int) ([]entity.User, error) {
+func (uc *UserUseCase) ListAll(offset, limit int) ([]entity.User, error) {
 	return uc.repository.ListAll(offset, limit)
 }
 
-func (uc *ClientUseCase) GetByID(id string) (entity.User, error) {
+func (uc *UserUseCase) GetByID(id string) (entity.User, error) {
 	idParsed, err := entity.ParseID(id)
 	if err != nil {
 		return entity.User{}, err
@@ -26,8 +26,8 @@ func (uc *ClientUseCase) GetByID(id string) (entity.User, error) {
 	return uc.repository.GetByID(idParsed)
 }
 
-func (uc *ClientUseCase) Create(c entity.User) error {
-	category, err := entity.NewUser(c)
+func (uc *UserUseCase) Create(u entity.User) error {
+	category, err := entity.NewUser(u)
 	if err != nil {
 		return err
 	}
@@ -37,7 +37,7 @@ func (uc *ClientUseCase) Create(c entity.User) error {
 	return nil
 }
 
-func (uc *ClientUseCase) Update(id string, payload entity.User) error {
+func (uc *UserUseCase) Update(id string, payload entity.User) error {
 	idParsed, err := entity.ParseID(id)
 	if err != nil {
 		return err
@@ -48,7 +48,7 @@ func (uc *ClientUseCase) Update(id string, payload entity.User) error {
 	return nil
 }
 
-func (uc *ClientUseCase) Delete(id string) error {
+func (uc *UserUseCase) Delete(id string) error {
 	idParsed, err := entity.ParseID(id)
 	if err != nil {
 		return err
