@@ -38,7 +38,7 @@ func main() {
 	})
 
 	bootstrap.NewCategory(router, db)
-	bootstrap.NewClient(router, db)
+	bootstrap.NewUser(router, db)
 	bootstrap.NewProduct(router, db)
 	bootstrap.NewSwagger(router)
 

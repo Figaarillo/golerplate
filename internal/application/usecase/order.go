@@ -31,13 +31,13 @@ func (uc *OrderUseCase) GetByID(id string) (entity.Order, error) {
 	return uc.repository.GetByID(idParsed)
 }
 
-func (uc *OrderUseCase) GetByClientID(id string) ([]entity.Order, error) {
+func (uc *OrderUseCase) GetByUserID(id string) ([]entity.Order, error) {
 	idParsed, err := entity.ParseID(id)
 	if err != nil {
 		return nil, err
 	}
 
-	return uc.repository.GetByClientID(idParsed)
+	return uc.repository.GetByUserID(idParsed)
 }
 
 func (uc *OrderUseCase) Create(order entity.Order) error {

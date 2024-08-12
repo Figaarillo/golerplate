@@ -36,7 +36,7 @@ func (o *OrderGorm) GetByID(id entity.ID) (entity.Order, error) {
 	return order, nil
 }
 
-func (o *OrderGorm) GetByClientID(userID entity.ID) ([]entity.Order, error) {
+func (o *OrderGorm) GetByUserID(userID entity.ID) ([]entity.Order, error) {
 	var orders []entity.Order
 	if result := o.db.
 		Preload("Products").Preload("User").

@@ -24,7 +24,7 @@ func NewOrderRouter(router *mux.Router, handler handler.OrderHandler) *OrderRout
 func (o *OrderRouter) SetupRoutes() {
 	o.router.HandleFunc("", o.handler.List).Methods(http.MethodGet)
 	o.router.HandleFunc("/{id}", o.handler.GetByID).Methods(http.MethodGet)
-	o.router.HandleFunc("", o.handler.GetByClientID).Methods(http.MethodGet)
+	o.router.HandleFunc("", o.handler.GetByUserID).Methods(http.MethodGet)
 	o.router.HandleFunc("", o.handler.Create).Methods(http.MethodPost)
 	o.router.HandleFunc("/{id}", o.handler.SetStatus).Methods(http.MethodPut)
 	o.router.HandleFunc("/{id}", o.handler.Delete).Methods(http.MethodDelete)

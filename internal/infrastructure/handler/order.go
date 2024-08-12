@@ -71,23 +71,23 @@ func (h *OrderHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 	utils.HandleHTTPResponse(w, "Order retrieved successfully", http.StatusOK, order)
 }
 
-// GetByClientID godoc
-// @Summary Get orders by client ID
-// @Description Retrieve orders using its client ID
+// GetByUserID godoc
+// @Summary Get orders by user ID
+// @Description Retrieve orders using its user ID
 // @Tags orders
 // @Produce json
 // @Accept json
-// @Param id path uuid true "client ID"
+// @Param id path uuid true "user ID"
 // @Success 200 {array} entity.Order "Orders retrieved successfully"
-// @Router /api/orders/client/{id} [get]
-func (h *OrderHandler) GetByClientID(w http.ResponseWriter, r *http.Request) {
+// @Router /api/orders/user/{id} [get]
+func (h *OrderHandler) GetByUserID(w http.ResponseWriter, r *http.Request) {
 	id, err := utils.GetURLParam(r, "id")
 	if err != nil {
 		utils.HandleHTTPError(w, err, http.StatusInternalServerError)
 		return
 	}
 
-	orders, err := h.usecase.GetByClientID(id)
+	orders, err := h.usecase.GetByUserID(id)
 	if err != nil {
 		utils.HandleHTTPError(w, err, http.StatusNotFound)
 		return
