@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"testing"
 
+	"github.com/Figaarillo/golerplate/internal/bootstrap"
 	"github.com/Figaarillo/golerplate/internal/domain/entity"
-	"github.com/Figaarillo/golerplate/internal/setup"
 )
 
 var (
@@ -67,7 +67,7 @@ func assertProductAttributes(t *testing.T, id, name, description string, stock i
 
 func TestProduct(t *testing.T) {
 	InitDBAndRouter(t)
-	setup.NewProduct(Router, DB)
+	bootstrap.NewProduct(Router, DB)
 	initProducts()
 
 	t.Run("Test CRUD operations", func(t *testing.T) {

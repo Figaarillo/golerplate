@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"testing"
 
+	"github.com/Figaarillo/golerplate/internal/bootstrap"
 	"github.com/Figaarillo/golerplate/internal/domain/entity"
-	"github.com/Figaarillo/golerplate/internal/setup"
 )
 
 var category1, category2 *entity.Category
@@ -46,7 +46,7 @@ func assertCategoryAttributes(t *testing.T, id, name, description string) {
 
 func TestCategory(t *testing.T) {
 	InitDBAndRouter(t)
-	setup.NewCategory(Router, DB)
+	bootstrap.NewCategory(Router, DB)
 	initCategories()
 
 	t.Run("Test CRUD operations", func(t *testing.T) {
