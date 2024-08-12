@@ -17,39 +17,8 @@ definitions:
       updated_at:
         type: string
     type: object
-  entity.Client:
-    properties:
-      age:
-        maximum: 120
-        minimum: 0
-        type: integer
-      created_at:
-        type: string
-      email:
-        type: string
-      firstname:
-        type: string
-      id:
-        type: string
-      lastname:
-        type: string
-      orders:
-        items:
-          $ref: '#/definitions/entity.Order'
-        type: array
-      updated_at:
-        type: string
-    required:
-    - email
-    - firstname
-    - lastname
-    type: object
   entity.Order:
     properties:
-      client:
-        $ref: '#/definitions/entity.Client'
-      client_id:
-        type: string
       created_at:
         type: string
       id:
@@ -64,9 +33,13 @@ definitions:
         type: number
       updated_at:
         type: string
+      user:
+        $ref: '#/definitions/entity.User'
+      user_id:
+        type: string
     required:
-    - client_id
     - status
+    - user_id
     type: object
   entity.Product:
     properties:
@@ -92,6 +65,33 @@ definitions:
         type: string
     required:
     - category_id
+    type: object
+  entity.User:
+    properties:
+      age:
+        maximum: 120
+        minimum: 0
+        type: integer
+      created_at:
+        type: string
+      email:
+        type: string
+      firstname:
+        type: string
+      id:
+        type: string
+      lastname:
+        type: string
+      orders:
+        items:
+          $ref: '#/definitions/entity.Order'
+        type: array
+      updated_at:
+        type: string
+    required:
+    - email
+    - firstname
+    - lastname
     type: object
 host: localhost:8080
 info:
@@ -220,120 +220,6 @@ paths:
       summary: Update a category by ID
       tags:
       - categories
-  /api/clients:
-    get:
-      consumes:
-      - application/json
-      description: Get a list of all clients with pagination
-      parameters:
-      - description: Offset
-        in: query
-        name: offset
-        required: true
-        type: integer
-      - description: Limit
-        in: query
-        name: limit
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Clients retrieved successfully
-          schema:
-            items:
-              $ref: '#/definitions/entity.Client'
-            type: array
-      summary: List all clients with pagination
-      tags:
-      - clients
-    post:
-      consumes:
-      - application/json
-      description: Create a new client with the provided data
-      parameters:
-      - description: Client
-        in: body
-        name: client
-        required: true
-        schema:
-          $ref: '#/definitions/entity.Client'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Client created successfully
-          schema:
-            $ref: '#/definitions/entity.Client'
-      summary: Create a client
-      tags:
-      - clients
-  /api/clients/{id}:
-    delete:
-      consumes:
-      - application/json
-      description: Delete an existing client using its ID
-      parameters:
-      - description: Client ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Client deleted successfully
-      summary: Delete a client by ID
-      tags:
-      - clients
-    get:
-      consumes:
-      - application/json
-      description: Retrieve a client using its ID
-      parameters:
-      - description: Client ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Client retrieved successfully
-          schema:
-            $ref: '#/definitions/entity.Client'
-      summary: Get a client by ID
-      tags:
-      - clients
-    put:
-      consumes:
-      - application/json
-      description: Update an existing client by ID
-      parameters:
-      - description: Client ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: Client data
-        in: body
-        name: client
-        required: true
-        schema:
-          $ref: '#/definitions/entity.Client'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Client updated successfully
-          schema:
-            $ref: '#/definitions/entity.Client'
-      summary: Update a client
-      tags:
-      - clients
   /api/orders:
     get:
       consumes:
@@ -448,11 +334,11 @@ paths:
       summary: Set status
       tags:
       - orders
-  /api/orders/client/{id}:
+  /api/orders/user/{id}:
     get:
       consumes:
       - application/json
-      description: Retrieve orders using its client ID
+      description: Retrieve orders using its user ID
       produces:
       - application/json
       responses:
@@ -462,7 +348,7 @@ paths:
             items:
               $ref: '#/definitions/entity.Order'
             type: array
-      summary: Get orders by client ID
+      summary: Get orders by user ID
       tags:
       - orders
   /api/products:
@@ -581,4 +467,118 @@ paths:
       summary: Update a product by ID
       tags:
       - products
+  /api/users:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of all users with pagination
+      parameters:
+      - description: Offset
+        in: query
+        name: offset
+        required: true
+        type: integer
+      - description: Limit
+        in: query
+        name: limit
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Users retrieved successfully
+          schema:
+            items:
+              $ref: '#/definitions/entity.User'
+            type: array
+      summary: List all users with pagination
+      tags:
+      - users
+    post:
+      consumes:
+      - application/json
+      description: Create a new user with the provided data
+      parameters:
+      - description: User
+        in: body
+        name: User
+        required: true
+        schema:
+          $ref: '#/definitions/entity.User'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: User created successfully
+          schema:
+            $ref: '#/definitions/entity.User'
+      summary: Create a user
+      tags:
+      - users
+  /api/users/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete an existing user using its ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User deleted successfully
+      summary: Delete a user by ID
+      tags:
+      - users
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a user using its ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User retrieved successfully
+          schema:
+            $ref: '#/definitions/entity.User'
+      summary: Get a user by ID
+      tags:
+      - users
+    put:
+      consumes:
+      - application/json
+      description: Update an existing user by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: User data
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/entity.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User updated successfully
+          schema:
+            $ref: '#/definitions/entity.User'
+      summary: Update a user
+      tags:
+      - users
 swagger: "2.0"
