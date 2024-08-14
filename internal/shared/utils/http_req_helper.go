@@ -27,8 +27,11 @@ func GetURLParam(r *http.Request, key string) (string, error) {
 }
 
 func DecodeReqBody(r *http.Request, body interface{}) error {
+	defer r.Body.Close()
+
 	if err := json.NewDecoder(r.Body).Decode(body); err != nil {
 		return exeption.ErrInvalidBodyProvided
 	}
+
 	return nil
 }
