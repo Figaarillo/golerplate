@@ -82,8 +82,6 @@ func (h *UserHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 // @Success 201 {object} entity.User "User created successfully"
 // @Router /api/users [post]
 func (h *UserHandler) Create(w http.ResponseWriter, r *http.Request) {
-	defer r.Body.Close()
-
 	var payload entity.User
 	if err := utils.DecodeReqBody(r, &payload); err != nil {
 		http.Error(w, err.Error(), http.StatusUnprocessableEntity)
@@ -96,12 +94,14 @@ func (h *UserHandler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := h.usecase.Create(payload); err != nil {
+	user, err := h.usecase.Create(payload)
+	if err != nil {
 		http.Error(w, err.Error(), http.StatusConflict)
 		return
 	}
 
-	utils.HandleHTTPResponse(w, "User created successfully", http.StatusCreated, nil)
+	res := map[string]string{"id": user.ID.String()}
+	utils.HandleHTTPResponse(w, "User created successfully", http.StatusCreated, res)
 }
 
 // Update godoc
@@ -115,8 +115,6 @@ func (h *UserHandler) Create(w http.ResponseWriter, r *http.Request) {
 // @Success 200 {object} entity.User "User updated successfully"
 // @Router /api/users/{id} [put]
 func (h *UserHandler) Update(w http.ResponseWriter, r *http.Request) {
-	defer r.Body.Close()
-
 	id, err := utils.GetURLParam(r, "id")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -160,4 +158,3 @@ func (h *UserHandler) Delete(w http.ResponseWriter, r *http.Request) {
 
 	utils.HandleHTTPResponse(w, "User deleted successfully", http.StatusOK, nil)
 }
-
