@@ -37,6 +37,7 @@ func main() {
 		w.Write([]byte("Hello, World!"))
 	})
 
+	bootstrap.NewAuth(router, db, env)
 	bootstrap.NewCategory(router, db)
 	bootstrap.NewUser(router, db)
 	bootstrap.NewProduct(router, db)
