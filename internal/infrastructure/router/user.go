@@ -21,10 +21,10 @@ func NewUserRouter(router *mux.Router, handler handler.UserHandler) *UserRouter 
 	}
 }
 
-func (c *UserRouter) SetupRoutes() {
-	c.router.HandleFunc("", c.handler.ListAll).Methods(http.MethodGet)
-	c.router.HandleFunc("/{id}", c.handler.GetByID).Methods(http.MethodGet)
-	c.router.HandleFunc("", c.handler.Create).Methods(http.MethodPost)
-	c.router.HandleFunc("/{id}", c.handler.Update).Methods(http.MethodPut)
-	c.router.HandleFunc("/{id}", c.handler.Delete).Methods(http.MethodDelete)
+func (u *UserRouter) SetupRoutes() {
+	u.router.HandleFunc("", u.handler.ListAll).Methods(http.MethodGet)
+	u.router.HandleFunc("/{id}", u.handler.GetByID).Methods(http.MethodGet)
+	u.router.HandleFunc("", u.handler.Create).Methods(http.MethodPost)
+	u.router.HandleFunc("/{id}", u.handler.Update).Methods(http.MethodPut)
+	u.router.HandleFunc("/{id}", u.handler.Delete).Methods(http.MethodDelete)
 }
