@@ -36,3 +36,12 @@ func (uc *AuthUseCase) GenerateAccessToken(userID entity.ID) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString([]byte(uc.env.JWT_SECRET_KEY))
 }
+
+func (uc *AuthUseCase) GenerateRefreshToken(userID entity.ID) (string, error) {
+	claims := jwt.MapClaims{}
+	claims["user_id"] = userID
+	claims["exp"] = time.Now().Add(time.Second * time.Duration(uc.env.JWT_REFRESH_EXPIRATION))
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	return token.SignedString([]byte(uc.env.JWT_SECRET_KEY))
+}
