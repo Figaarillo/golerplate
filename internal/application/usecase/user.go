@@ -26,15 +26,13 @@ func (uc *UserUseCase) GetByID(id string) (entity.User, error) {
 	return uc.repository.GetByID(idParsed)
 }
 
-func (uc *UserUseCase) Create(u entity.User) error {
-	category, err := entity.NewUser(u)
+func (uc *UserUseCase) Create(u entity.User) (entity.User, error) {
+	user, err := entity.NewUser(u)
 	if err != nil {
-		return err
+		return entity.User{}, err
 	}
 
-	uc.repository.Create(category)
-
-	return nil
+	return uc.repository.Create(user)
 }
 
 func (uc *UserUseCase) Update(id string, payload entity.User) error {
