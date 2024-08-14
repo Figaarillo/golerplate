@@ -11,8 +11,8 @@ import (
 type User struct {
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
-	Email     string    `json:"email" gorm:"unique;not null" validate:"required,email,unique"`
-	Password  string    `json:"-" gorm:"not null" validate:"required,min=12"`
+	Email     string    `json:"email" gorm:"unique;not null" validate:"required,email"`
+	Password  string    `json:"password" gorm:"not null" validate:"required,min=12"`
 	FirstName string    `json:"firstname" gorm:"not null" validate:"required,alpha"`
 	LastName  string    `json:"lastname" gorm:"not null" validate:"required,alpha"`
 	Orders    []Order   `json:"orders,omitempty" gorm:"foreignKey:UserID;OnDelete:CASCADE;"`
