@@ -12,22 +12,23 @@ import (
 )
 
 type EnvVars struct {
-	JWT_SECRET_KEY             string        `validate:"required"`
-	TEST_DATABASE_NAME         string        `validate:"required"`
-	DATABASE_NAME              string        `validate:"required"`
-	TEST_DATABASE_PASS         string        `validate:"required"`
-	DATABASE_USER              string        `validate:"required"`
-	TEST_DATABASE_USER         string        `validate:"required"`
 	DATABASE_HOST              string        `validate:"required"`
+	DATABASE_USER              string        `validate:"required"`
 	DATABASE_PASS              string        `validate:"required"`
+	DATABASE_NAME              string        `validate:"required"`
+	TEST_DATABASE_USER         string        `validate:"required"`
+	TEST_DATABASE_PASS         string        `validate:"required"`
+	TEST_DATABASE_NAME         string        `validate:"required"`
+	JWT_SECRET_KEY             string        `validate:"required"`
 	SERVER_PORT                int           `validate:"required,gte=1,lte=65535"`
+	SERVER_READ_TIMEOUT        int           `validate:"required,gte=1"`
 	DATABASE_PORT              int           `validate:"required,gte=1,lte=65535"`
-	JWT_EXPIRES_IN             int           `validate:"required,gte=1"`
+	DATABASE_MAX_CONNS         int           `validate:"required,gte=1"`
+	DATABASE_MAX_IDLE_CONNS    int           `validate:"required,gte=1"`
 	DATABASE_MAX_CONN_LIFETIME time.Duration `validate:"required"`
 	TEST_DATABASE_PORT         int           `validate:"required,gte=1,lte=65535"`
-	SERVER_READ_TIMEOUT        int           `validate:"required,gte=1"`
-	DATABASE_MAX_IDLE_CONNS    int           `validate:"required,gte=1"`
-	DATABASE_MAX_CONNS         int           `validate:"required,gte=1"`
+	JWT_EXPIRATION             int           `validate:"required",gte=1`
+	JWT_REFRESH_EXPIRATION     int           `validate:"required",gte=1`
 }
 
 func NewEnvConf(envPath string) (*EnvVars, error) {
@@ -47,12 +48,13 @@ func NewEnvConf(envPath string) (*EnvVars, error) {
 		DATABASE_MAX_CONNS:         atoi(os.Getenv("DATABASE_MAX_CONNS")),
 		DATABASE_MAX_IDLE_CONNS:    atoi(os.Getenv("DATABASE_MAX_IDLE_CONNS")),
 		DATABASE_MAX_CONN_LIFETIME: time.Duration(atoi(os.Getenv("DATABASE_MAX_CONN_LIFETIME"))),
-		JWT_SECRET_KEY:             os.Getenv("JWT_SECRET_KEY"),
-		JWT_EXPIRES_IN:             atoi(os.Getenv("JWT_EXPIRES_IN")),
 		TEST_DATABASE_PORT:         atoi(os.Getenv("TEST_DATABASE_PORT")),
 		TEST_DATABASE_USER:         os.Getenv("TEST_DATABASE_USER"),
 		TEST_DATABASE_PASS:         os.Getenv("TEST_DATABASE_PASS"),
 		TEST_DATABASE_NAME:         os.Getenv("TEST_DATABASE_NAME"),
+		JWT_SECRET_KEY:             os.Getenv("JWT_SECRET_KEY"),
+		JWT_EXPIRATION:             atoi(os.Getenv("JWT_EXPIRATION")),
+		JWT_REFRESH_EXPIRATION:     atoi(os.Getenv("JWT_REFRESH_EXPIRATION")),
 	}
 
 	err = validateEnvVars(env)
