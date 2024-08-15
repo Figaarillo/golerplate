@@ -35,3 +35,7 @@ func DecodeReqBody(r *http.Request, body interface{}) error {
 
 	return nil
 }
+
+func GetHeader(r *http.Request, key string) string {
+	return r.Header.Get(key)
+}
