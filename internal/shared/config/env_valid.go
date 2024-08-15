@@ -20,6 +20,7 @@ type EnvVars struct {
 	TEST_DATABASE_PASS         string        `validate:"required"`
 	TEST_DATABASE_NAME         string        `validate:"required"`
 	JWT_SECRET_KEY             string        `validate:"required"`
+	JWT_SECRET_KEY_REFRESH     string        `validate:"required"`
 	SERVER_PORT                int           `validate:"required,gte=1,lte=65535"`
 	SERVER_READ_TIMEOUT        int           `validate:"required,gte=1"`
 	DATABASE_PORT              int           `validate:"required,gte=1,lte=65535"`
@@ -27,8 +28,8 @@ type EnvVars struct {
 	DATABASE_MAX_IDLE_CONNS    int           `validate:"required,gte=1"`
 	DATABASE_MAX_CONN_LIFETIME time.Duration `validate:"required"`
 	TEST_DATABASE_PORT         int           `validate:"required,gte=1,lte=65535"`
-	JWT_EXPIRATION             int           `validate:"required",gte=1`
-	JWT_REFRESH_EXPIRATION     int           `validate:"required",gte=1`
+	JWT_EXPIRATION             int           `validate:"required,gte=1"`
+	JWT_REFRESH_EXPIRATION     int           `validate:"required,gte=1"`
 }
 
 func NewEnvConf(envPath string) (*EnvVars, error) {
@@ -53,6 +54,7 @@ func NewEnvConf(envPath string) (*EnvVars, error) {
 		TEST_DATABASE_PASS:         os.Getenv("TEST_DATABASE_PASS"),
 		TEST_DATABASE_NAME:         os.Getenv("TEST_DATABASE_NAME"),
 		JWT_SECRET_KEY:             os.Getenv("JWT_SECRET_KEY"),
+		JWT_SECRET_KEY_REFRESH:     os.Getenv("JWT_SECRET_KEY_REFRESH"),
 		JWT_EXPIRATION:             atoi(os.Getenv("JWT_EXPIRATION")),
 		JWT_REFRESH_EXPIRATION:     atoi(os.Getenv("JWT_REFRESH_EXPIRATION")),
 	}
