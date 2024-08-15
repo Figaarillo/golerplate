@@ -10,7 +10,7 @@ import (
 )
 
 func NewAuth(initRouter *mux.Router, db *gorm.DB, env *config.EnvVars) {
-	authRepository := repository.NewAuthGorm(db)
+	authRepository := repository.NewAuthRepositoryMemory()
 	userRepository := repository.NewUserGorm(db)
 
 	handler := handler.NewAuthHandler(env, authRepository, userRepository)
