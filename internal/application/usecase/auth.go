@@ -22,23 +22,33 @@ func NewAuthUseCase(env *config.EnvVars, r repository.AuthRepository) *AuthUseCa
 	}
 }
 
+type Claims struct {
+	jwt.StandardClaims
+	UserID    string `json:"user_id"`
+	IssuedAt  int64  `json:"iat"`
+	ExpiresAt int64  `json:"exp"`
+}
+
 func (uc *AuthUseCase) GenerateAccessToken(userID entity.ID) (string, error) {
-	claims := jwt.MapClaims{}
-	claims["authorized"] = true
-	claims["user_id"] = userID
-	claims["exp"] = time.Now().Add(time.Second * time.Duration(uc.env.JWT_EXPIRATION)).Unix()
+	claims := Claims{
+		UserID:    userID.String(),
+		IssuedAt:  time.Now().Unix(),
+		ExpiresAt: time.Now().Add(time.Second * time.Duration(uc.env.JWT_EXPIRATION)).Unix(),
+	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString([]byte(uc.env.JWT_SECRET_KEY))
 }
 
 func (uc *AuthUseCase) GenerateRefreshToken(userID entity.ID) (string, error) {
-	claims := jwt.MapClaims{}
-	claims["user_id"] = userID
-	claims["exp"] = time.Now().Add(time.Second * time.Duration(uc.env.JWT_REFRESH_EXPIRATION)).Unix()
+	claims := Claims{
+		UserID:    userID.String(),
+		IssuedAt:  time.Now().Unix(),
+		ExpiresAt: time.Now().Add(time.Second * time.Duration(uc.env.JWT_REFRESH_EXPIRATION)).Unix(),
+	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString([]byte(uc.env.JWT_SECRET_KEY))
+	return token.SignedString([]byte(uc.env.JWT_SECRET_KEY_REFRESH))
 }
 
 func (uc *AuthUseCase) StoreAccessToken(token entity.Token) error {
@@ -72,4 +82,34 @@ func (uc *AuthUseCase) GenerateAndStoreTokens(userId entity.ID) (entity.Token, e
 	}
 
 	return jwt, nil
+}
+
+func (uc *AuthUseCase) IsRefreshTokenValid(refreshToken string) error {
+	var claims Claims
+	return validateToken(refreshToken, &claims, []byte(uc.env.JWT_SECRET_KEY_REFRESH))
+}
+
+func (uc *AuthUseCase) IsAccessTokenValid(accessToken string) error {
+	var claims Claims
+	return validateToken(accessToken, &claims, []byte(uc.env.JWT_SECRET_KEY))
+}
+
+func validateToken(token string, claims *Claims, key []byte) error {
+	parseToken, err := jwt.ParseWithClaims(token, claims, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+		}
+
+		return key, nil
+	})
+
+	if !parseToken.Valid {
+		return nil
+	}
+
+	if claims.ExpiresAt < time.Now().Unix() {
+		return nil
+	}
+
+	return err
 }
