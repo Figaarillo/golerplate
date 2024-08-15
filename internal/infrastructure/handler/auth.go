@@ -26,7 +26,7 @@ func NewAuthHandler(env *config.EnvVars, authRepo repository.AuthRepository, use
 	}
 }
 
-func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
+func (h *AuthHandler) Signup(w http.ResponseWriter, r *http.Request) {
 	var user entity.User
 	var err error
 

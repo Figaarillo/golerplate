@@ -22,5 +22,5 @@ func NewAuthRouter(router *mux.Router, handler handler.AuthHandler) *AuthRouter 
 }
 
 func (a *AuthRouter) SetupRoutes() {
-	a.router.HandleFunc("/register", a.handler.Register).Methods(http.MethodPost)
+	a.router.HandleFunc("/signup", a.handler.Signup).Methods(http.MethodPost)
 }
