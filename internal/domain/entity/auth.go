@@ -8,5 +8,5 @@ type Token struct {
 	AccessToken  string
 	RefreshToken string
 	TokenType    string
-	UserID       ID
+	UserID       string
 }
