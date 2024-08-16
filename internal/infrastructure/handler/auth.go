@@ -58,3 +58,16 @@ func (h *AuthHandler) Signup(w http.ResponseWriter, r *http.Request) {
 
 	utils.HandleHTTPResponse(w, "User registered successfully", http.StatusCreated, token)
 }
+
+func (h *AuthHandler) RefreshToken(w http.ResponseWriter, r *http.Request) {
+	refreshToken := utils.GetHeader(r, "refresh-token")
+
+	newAccessToken, err := h.authUC.RefreshAndStoreAccessToken(refreshToken)
+	if err != nil {
+		utils.HandleHTTPError(w, err, http.StatusUnauthorized)
+		return
+	}
+	utils.HandleHTTPResponse(w, "New access token generated successfully", http.StatusOK, map[string]string{
+		"access_token": newAccessToken,
+	})
+}
