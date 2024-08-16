@@ -35,6 +35,16 @@ func (u *UserGorm) GetByID(id entity.ID) (entity.User, error) {
 	return user, nil
 }
 
+func (u *UserGorm) GetByProp(prop string, value interface{}) (entity.User, error) {
+	var user entity.User
+
+	if result := u.db.Where(prop+" = ?", value).First(&user); result.Error != nil {
+		return entity.User{}, result.Error
+	}
+
+	return user, nil
+}
+
 func (u *UserGorm) Create(user *entity.User) (entity.User, error) {
 	if result := u.db.Create(user); result.Error != nil {
 		return entity.User{}, result.Error
