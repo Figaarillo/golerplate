@@ -29,9 +29,9 @@ type Claims struct {
 	ExpiresAt int64  `json:"exp"`
 }
 
-func (uc *AuthUseCase) GenerateAccessToken(userID entity.ID) (string, error) {
+func (uc *AuthUseCase) GenerateAccessToken(userID string) (string, error) {
 	claims := Claims{
-		UserID:    userID.String(),
+		UserID:    userID,
 		IssuedAt:  time.Now().Unix(),
 		ExpiresAt: time.Now().Add(time.Second * time.Duration(uc.env.JWT_EXPIRATION)).Unix(),
 	}
@@ -40,9 +40,9 @@ func (uc *AuthUseCase) GenerateAccessToken(userID entity.ID) (string, error) {
 	return token.SignedString([]byte(uc.env.JWT_SECRET_KEY))
 }
 
-func (uc *AuthUseCase) GenerateRefreshToken(userID entity.ID) (string, error) {
+func (uc *AuthUseCase) GenerateRefreshToken(userID string) (string, error) {
 	claims := Claims{
-		UserID:    userID.String(),
+		UserID:    userID,
 		IssuedAt:  time.Now().Unix(),
 		ExpiresAt: time.Now().Add(time.Second * time.Duration(uc.env.JWT_REFRESH_EXPIRATION)).Unix(),
 	}
@@ -68,7 +68,7 @@ func (uc *AuthUseCase) StoreAccessToken(accessToken, refreshToken, userID string
 	return token, nil
 }
 
-func (uc *AuthUseCase) GenerateAndStoreTokens(userId entity.ID) (entity.Token, error) {
+func (uc *AuthUseCase) GenerateAndStoreTokens(userId string) (entity.Token, error) {
 	var accessToken string
 	var refreshToken string
 	var err error
@@ -81,7 +81,7 @@ func (uc *AuthUseCase) GenerateAndStoreTokens(userId entity.ID) (entity.Token, e
 		return entity.Token{}, fmt.Errorf("could not generate refresh token: %v", err)
 	}
 
-	jwt, err := uc.StoreAccessToken(accessToken, refreshToken, userId.String())
+	jwt, err := uc.StoreAccessToken(accessToken, refreshToken, userId)
 	if err != nil {
 		return entity.Token{}, fmt.Errorf("could not store access token: %v", err)
 	}
@@ -123,17 +123,12 @@ func (uc *AuthUseCase) RefreshAndStoreAccessToken(refreshToken string) (string, 
 		return "", fmt.Errorf("invalid refresh token: %v", err)
 	}
 
-	userId, err := entity.ParseID(claims.UserID)
-	if err != nil {
-		return "", fmt.Errorf("could not parse user id: %v", err)
-	}
-
-	newAccessToken, err := uc.GenerateAccessToken(userId)
+	newAccessToken, err := uc.GenerateAccessToken(claims.UserID)
 	if err != nil {
 		return "", fmt.Errorf("could not generate access token: %v", err)
 	}
 
-	if _, err := uc.StoreAccessToken(newAccessToken, refreshToken, userId.String()); err != nil {
+	if _, err := uc.StoreAccessToken(newAccessToken, refreshToken, claims.UserID); err != nil {
 		return "", fmt.Errorf("could not store access token: %v", err)
 	}
 
