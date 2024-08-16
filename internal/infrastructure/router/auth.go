@@ -23,6 +23,6 @@ func NewAuthRouter(router *mux.Router, handler handler.AuthHandler) *AuthRouter 
 
 func (a *AuthRouter) SetupRoutes() {
 	a.router.HandleFunc("/signup", a.handler.Signup).Methods(http.MethodPost)
-	// a.router.HandleFunc("/login", a.handler.Login).Methods(http.MethodPost)
+	a.router.HandleFunc("/login", a.handler.Login).Methods(http.MethodPost)
 	a.router.HandleFunc("/refresh-token", a.handler.RefreshToken).Methods(http.MethodGet)
 }
