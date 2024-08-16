@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/Figaarillo/golerplate/internal/application/usecase"
@@ -50,7 +51,7 @@ func (h *AuthHandler) Signup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, err := h.authUC.GenerateAndStoreTokens(user.ID)
+	token, err := h.authUC.GenerateAndStoreTokens(user.ID.String())
 	if err != nil {
 		utils.HandleHTTPError(w, err, http.StatusInternalServerError)
 		return
@@ -70,4 +71,43 @@ func (h *AuthHandler) RefreshToken(w http.ResponseWriter, r *http.Request) {
 	utils.HandleHTTPResponse(w, "New access token generated successfully", http.StatusOK, map[string]string{
 		"access_token": newAccessToken,
 	})
+}
+
+func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
+	var authUser entity.AuthUser
+	if err := utils.DecodeReqBody(r, &authUser); err != nil {
+		http.Error(w, err.Error(), http.StatusUnprocessableEntity)
+		return
+	}
+
+	if err := h.validator.Struct(authUser); err != nil {
+		errors := err.(validator.ValidationErrors)
+		http.Error(w, fmt.Sprintf("validatoin error: %s", errors), http.StatusUnprocessableEntity)
+		return
+	}
+
+	accessToken := utils.GetHeader(r, "access_token")
+	if _, err := h.authUC.IsAccessTokenValid(accessToken); err != nil {
+		utils.HandleHTTPError(w, fmt.Errorf("invalid access token"), http.StatusUnauthorized)
+		return
+	}
+
+	user, err := h.userUC.GetByProp("email", authUser.Email)
+	if err != nil {
+		utils.HandleHTTPError(w, err, http.StatusNotFound)
+		return
+	}
+
+	if err := user.ComparePassword(authUser.Password); err != nil {
+		utils.HandleHTTPError(w, err, http.StatusUnauthorized)
+		return
+	}
+
+	token, err := h.authUC.GenerateAndStoreTokens(user.ID.String())
+	if err != nil {
+		utils.HandleHTTPError(w, err, http.StatusInternalServerError)
+		return
+	}
+
+	utils.HandleHTTPResponse(w, "User logged in successfully", http.StatusOK, token)
 }
