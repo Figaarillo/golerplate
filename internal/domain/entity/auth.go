@@ -10,3 +10,8 @@ type Token struct {
 	TokenType    string
 	UserID       string
 }
+
+type AuthUser struct {
+	Email    string `json:"email" validate:"required,email"`
+	Password string `json:"password" validate:"required,min=12"`
+}
