@@ -26,6 +26,10 @@ func (uc *UserUseCase) GetByID(id string) (entity.User, error) {
 	return uc.repository.GetByID(idParsed)
 }
 
+func (uc *UserUseCase) GetByProp(prop string, value interface{}) (entity.User, error) {
+	return uc.repository.GetByProp(prop, value)
+}
+
 func (uc *UserUseCase) Create(u entity.User) (entity.User, error) {
 	user, err := entity.NewUser(u)
 	if err != nil {
