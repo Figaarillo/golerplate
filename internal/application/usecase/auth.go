@@ -51,8 +51,21 @@ func (uc *AuthUseCase) GenerateRefreshToken(userID entity.ID) (string, error) {
 	return token.SignedString([]byte(uc.env.JWT_SECRET_KEY_REFRESH))
 }
 
-func (uc *AuthUseCase) StoreAccessToken(token entity.Token) error {
-	return uc.repository.StoreToken(token)
+func (uc *AuthUseCase) StoreAccessToken(accessToken, refreshToken, userID string) (entity.Token, error) {
+	token := entity.Token{
+		AccessToken:  accessToken,
+		RefreshToken: refreshToken,
+		ExpiresAt:    time.Now().Add(time.Second * time.Duration(uc.env.JWT_EXPIRATION)),
+		IssuedAt:     time.Now(),
+		TokenType:    "Bearer",
+		UserID:       userID,
+	}
+
+	if err := uc.repository.StoreToken(token); err != nil {
+		return entity.Token{}, fmt.Errorf("could not store access token: %v", err)
+	}
+
+	return token, nil
 }
 
 func (uc *AuthUseCase) GenerateAndStoreTokens(userId entity.ID) (entity.Token, error) {
@@ -68,48 +81,61 @@ func (uc *AuthUseCase) GenerateAndStoreTokens(userId entity.ID) (entity.Token, e
 		return entity.Token{}, fmt.Errorf("could not generate refresh token: %v", err)
 	}
 
-	jwt := entity.Token{
-		AccessToken:  accessToken,
-		RefreshToken: refreshToken,
-		ExpiresAt:    time.Now().Add(time.Second * time.Duration(uc.env.JWT_EXPIRATION)),
-		IssuedAt:     time.Now(),
-		TokenType:    "Bearer",
-		UserID:       userId,
-	}
-
-	if err = uc.StoreAccessToken(jwt); err != nil {
+	jwt, err := uc.StoreAccessToken(accessToken, refreshToken, userId.String())
+	if err != nil {
 		return entity.Token{}, fmt.Errorf("could not store access token: %v", err)
 	}
 
 	return jwt, nil
 }
 
-func (uc *AuthUseCase) IsRefreshTokenValid(refreshToken string) error {
-	var claims Claims
-	return validateToken(refreshToken, &claims, []byte(uc.env.JWT_SECRET_KEY_REFRESH))
-}
-
-func (uc *AuthUseCase) IsAccessTokenValid(accessToken string) error {
-	var claims Claims
-	return validateToken(accessToken, &claims, []byte(uc.env.JWT_SECRET_KEY))
-}
-
-func validateToken(token string, claims *Claims, key []byte) error {
-	parseToken, err := jwt.ParseWithClaims(token, claims, func(token *jwt.Token) (interface{}, error) {
+func (uc *AuthUseCase) validateAndExtractClaims(tokenString string, secretKey []byte) (*Claims, error) {
+	claims := &Claims{}
+	token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
-
-		return key, nil
+		return secretKey, nil
 	})
 
-	if !parseToken.Valid {
-		return nil
+	if err != nil || !token.Valid {
+		return nil, err
 	}
 
 	if claims.ExpiresAt < time.Now().Unix() {
-		return nil
+		return nil, fmt.Errorf("token has expired")
 	}
 
-	return err
+	return claims, nil
+}
+
+func (uc *AuthUseCase) IsRefreshTokenValid(refreshToken string) (*Claims, error) {
+	return uc.validateAndExtractClaims(refreshToken, []byte(uc.env.JWT_SECRET_KEY_REFRESH))
+}
+
+func (uc *AuthUseCase) IsAccessTokenValid(accessToken string) (*Claims, error) {
+	return uc.validateAndExtractClaims(accessToken, []byte(uc.env.JWT_SECRET_KEY))
+}
+
+func (uc *AuthUseCase) RefreshAndStoreAccessToken(refreshToken string) (string, error) {
+	claims, err := uc.IsRefreshTokenValid(refreshToken)
+	if err != nil {
+		return "", fmt.Errorf("invalid refresh token: %v", err)
+	}
+
+	userId, err := entity.ParseID(claims.UserID)
+	if err != nil {
+		return "", fmt.Errorf("could not parse user id: %v", err)
+	}
+
+	newAccessToken, err := uc.GenerateAccessToken(userId)
+	if err != nil {
+		return "", fmt.Errorf("could not generate access token: %v", err)
+	}
+
+	if _, err := uc.StoreAccessToken(newAccessToken, refreshToken, userId.String()); err != nil {
+		return "", fmt.Errorf("could not store access token: %v", err)
+	}
+
+	return newAccessToken, nil
 }
