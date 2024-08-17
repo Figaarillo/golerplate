@@ -13,7 +13,7 @@ import (
 )
 
 // @title golerplate API
-// @version 1.0
+// @version 0.1.0
 // @description GOlerplate is boilerpalte for GO
 // @termsOfService http://swagger.io/terms/
 // @contact.name Figarillo

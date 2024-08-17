@@ -28,8 +28,8 @@ func NewOrderHandler(r repository.OrderRepository) *OrderHandler {
 // @Summary List orders with pagination
 // @Description Get a list of orders with pagination
 // @Tags orders
-// @Accept  json
-// @Produce  json
+// @Accept json
+// @Produce json
 // @Param offset query int true "Offset"
 // @Param limit query int true "Limit"
 // @Success 200 {array} entity.Order "Orders retrieved successfully"
@@ -50,8 +50,8 @@ func (h *OrderHandler) List(w http.ResponseWriter, r *http.Request) {
 // @Summary Get a order by ID
 // @Description Retrieve a order using its ID
 // @Tags orders
-// @Accept  json
-// @Produce  json
+// @Accept json
+// @Produce json
 // @Param id path int true "Order ID"
 // @Success 200 {object} entity.Order "Order retrieved successfully"
 // @Router /api/orders/{id} [get]
@@ -100,8 +100,8 @@ func (h *OrderHandler) GetByUserID(w http.ResponseWriter, r *http.Request) {
 // @Summary Create a new order
 // @Description Create a new order with the provided data
 // @Tags orders
-// @Accept  json
-// @Produce  json
+// @Accept json
+// @Produce json
 // @Param order body entity.Order true "Order data"
 // @Success 201 {object} entity.Order "Order created successfully"
 // @Router /api/orders [post]
@@ -132,8 +132,8 @@ func (h *OrderHandler) Create(w http.ResponseWriter, r *http.Request) {
 // @Summary Set status
 // @Description Set status of an order provided its ID
 // @Tags orders
-// @Accept  json
-// @Produce  json
+// @Accept json
+// @Produce json
 // @Param id path int true "order ID"
 // @Param order body entity.Order true "Order data"
 // @Success 200 {object} entity.Order "Order status updated successfully"
@@ -168,8 +168,8 @@ func (h *OrderHandler) SetStatus(w http.ResponseWriter, r *http.Request) {
 // @Summary Delete a order
 // @Description Delete an existing order using its ID
 // @Tags orders
-// @Accept  json
-// @Produce  json
+// @Accept json
+// @Produce json
 // @Param id path int true "order ID"
 // @Success 200 "Order deleted successfully"
 // @Router /api/orders/{id} [delete]

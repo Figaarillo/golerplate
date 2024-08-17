@@ -29,8 +29,8 @@ func NewUserHandler(r repository.UserRepository) *UserHandler {
 // @Summary List all users with pagination
 // @Description Get a list of all users with pagination
 // @Tags users
-// @Accept  json
-// @Produce  json
+// @Accept json
+// @Produce json
 // @Param offset query int true "Offset"
 // @Param limit query int true "Limit"
 // @Success 200 {array} entity.User "Users retrieved successfully"
@@ -51,8 +51,8 @@ func (h *UserHandler) ListAll(w http.ResponseWriter, r *http.Request) {
 // @Summary Get a user by ID
 // @Description Retrieve a user using its ID
 // @Tags users
-// @Accept  json
-// @Produce  json
+// @Accept json
+// @Produce json
 // @Param id path int true "User ID"
 // @Success 200 {object} entity.User "User retrieved successfully"
 // @Router /api/users/{id} [get]
@@ -76,8 +76,8 @@ func (h *UserHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 // @Summary Create a user
 // @Description Create a new user with the provided data
 // @Tags users
-// @Accept  json
-// @Produce  json
+// @Accept json
+// @Produce json
 // @Param User body entity.User true "User"
 // @Success 201 {object} entity.User "User created successfully"
 // @Router /api/users [post]
@@ -108,8 +108,8 @@ func (h *UserHandler) Create(w http.ResponseWriter, r *http.Request) {
 // @Summary Update a user
 // @Description Update an existing user by ID
 // @Tags users
-// @Accept  json
-// @Produce  json
+// @Accept json
+// @Produce json
 // @Param id path int true "User ID"
 // @Param user body entity.User true "User data"
 // @Success 200 {object} entity.User "User updated successfully"
@@ -139,8 +139,8 @@ func (h *UserHandler) Update(w http.ResponseWriter, r *http.Request) {
 // @Summary Delete a user by ID
 // @Description Delete an existing user using its ID
 // @Tags users
-// @Accept  json
-// @Produce  json
+// @Accept json
+// @Produce json
 // @Param id path int true "User ID"
 // @Success 200 "User deleted successfully"
 // @Router /api/users/{id} [delete]

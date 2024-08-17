@@ -28,8 +28,8 @@ func NewCategoryHandler(r repository.CategoryRepository) *CategoryHandler {
 // @Summary List all categories with pagination
 // @Description Get a list of all categories with pagination
 // @Tags categories
-// @Accept  json
-// @Produce  json
+// @Accept json
+// @Produce json
 // @Param offset query int true "Offset"
 // @Param limit query int true "Limit"
 // @Success 200 {array} entity.Category "Categories retrieved successfully"
@@ -50,8 +50,8 @@ func (h *CategoryHandler) ListAll(w http.ResponseWriter, r *http.Request) {
 // @Summary Get a category by ID
 // @Description Retrieve a category using its ID
 // @Tags categories
-// @Accept  json
-// @Produce  json
+// @Accept json
+// @Produce json
 // @Param id path int true "Category ID"
 // @Success 200 {object} entity.Category "Category retrieved successfully"
 // @Router /api/categories/{id} [get]
@@ -75,8 +75,8 @@ func (h *CategoryHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 // @Summary Create a new category
 // @Description Create a new category with the provided data
 // @Tags categories
-// @Accept  json
-// @Produce  json
+// @Accept json
+// @Produce json
 // @Param category body entity.Category true "Category data"
 // @Success 201 {object} entity.Category "Category created successfully"
 // @Router /api/categories [post]
@@ -107,8 +107,8 @@ func (h *CategoryHandler) Create(w http.ResponseWriter, r *http.Request) {
 // @Summary Update a category by ID
 // @Description Update an existing category by ID
 // @Tags categories
-// @Accept  json
-// @Produce  json
+// @Accept json
+// @Produce json
 // @Param id path int true "Category ID"
 // @Param category body entity.Category true "Category data"
 // @Success 200 {object} entity.Category "Category updated successfully"
@@ -140,8 +140,8 @@ func (h *CategoryHandler) Update(w http.ResponseWriter, r *http.Request) {
 // @Summary Delete a category by ID
 // @Description Delete an existing category using its ID
 // @Tags categories
-// @Accept  json
-// @Produce  json
+// @Accept json
+// @Produce json
 // @Param id path int true "Category ID"
 // @Success 200 "Category deleted successfully"
 // @Router /api/categories/{id} [delete]

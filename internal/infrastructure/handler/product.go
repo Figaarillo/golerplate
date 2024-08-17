@@ -28,8 +28,8 @@ func NewProductHandler(r repository.ProductRepository) *ProductHandler {
 // @Summary List all products with pagination
 // @Description Get a list of all products with pagination
 // @Tags products
-// @Accept  json
-// @Produce  json
+// @Accept json
+// @Produce json
 // @Param offset query int true "Offset"
 // @Param limit query int true "Limit"
 // @Success 200 {array} entity.Product "Products retrieved successfully"
@@ -50,8 +50,8 @@ func (h *ProductHandler) ListAll(w http.ResponseWriter, r *http.Request) {
 // @Summary Get a product by ID
 // @Description Retrive a product using its ID
 // @Tags products
-// @Accept  json
-// @Produce  json
+// @Accept json
+// @Produce json
 // @Param id path int true "Product ID"
 // @Success 200 {object} entity.Product "Product retrieved successfully"
 // @Router /api/products/{id} [get]
@@ -75,8 +75,8 @@ func (h *ProductHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 // @Summary Create a new product
 // @Description Create a new product with provided data
 // @Tags products
-// @Accept  json
-// @Produce  json
+// @Accept json
+// @Produce json
 // @Param product body entity.Product true "Product data"
 // @Success 201 {object} entity.Product "Product created successfully"
 // @Router /api/products [post]
@@ -107,8 +107,8 @@ func (h *ProductHandler) Create(w http.ResponseWriter, r *http.Request) {
 // @Summary Update a product by ID
 // @Description Update an existing product by ID
 // @Tags products
-// @Accept  json
-// @Produce  json
+// @Accept json
+// @Produce json
 // @Param id path int true "Product ID"
 // @Param product body entity.Product true "Product data"
 // @Success 200 {object} entity.Product "Product updated successfully"
@@ -140,8 +140,8 @@ func (h *ProductHandler) Update(w http.ResponseWriter, r *http.Request) {
 // @Summary Delete a product by ID
 // @Description Delete an existing product using its ID
 // @Tags products
-// @Accept  json
-// @Produce  json
+// @Accept json
+// @Produce json
 // @Param id path int true "Product ID"
 // @Success 200 {object} entity.Product "Product deleted successfully"
 // @Router /api/products/{id} [delete]

@@ -15,7 +15,7 @@ func NewSwaggerRouter(router *mux.Router) *SwaggerRouter {
 
 // path swagger is customable
 // path (/*any) is required for load the html page own by swagger
-// http://localhost:5000/api/swagger/index.html
+// http://localhost:8080/api/docs/
 func (s *SwaggerRouter) SetupRoutes() {
-	s.router.PathPrefix("/api/").Handler(httpSwagger.WrapHandler)
+	s.router.PathPrefix("/api/docs").Handler(httpSwagger.WrapHandler)
 }

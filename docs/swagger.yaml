@@ -86,12 +86,16 @@ definitions:
         items:
           $ref: '#/definitions/entity.Order'
         type: array
+      password:
+        minLength: 12
+        type: string
       updated_at:
         type: string
     required:
     - email
     - firstname
     - lastname
+    - password
     type: object
 host: localhost:8080
 info:
@@ -104,7 +108,7 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   termsOfService: http://swagger.io/terms/
   title: golerplate API
-  version: "1.0"
+  version: 0.1.0
 paths:
   /api/categories:
     get:
