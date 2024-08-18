@@ -6,10 +6,10 @@ GOlerplate is a template for web applications in Golang. This means it can be a 
 
 ## Technologies
 
-- **[gorilla/mux](https://github.com/gorilla/mux)**: HTTP router for building Go web servers with 🦍
-- **[gorm](https://gorm.io)**: ORM for Go
-- **[Docker](https://www.docker.com) & [Docker Compose](https://docs.docker.com/compose/)**: For the containerization
-- **[Swagger](https://swagger.io)**: API documentation
+- **[gorilla/mux](https://github.com/gorilla/mux)**: HTTP router for building Go web servers with 🦍.
+- **[gorm](https://gorm.io)**: Fantastic ORM library for Golang.
+- **[Docker](https://www.docker.com) & [Docker Compose](https://docs.docker.com/compose/)**: For the containerization.
+- **[Swagger](https://swagger.io)**: For the documentation of the API.
 
 ## Features
 
@@ -19,7 +19,6 @@ GOlerplate is a template for web applications in Golang. This means it can be a 
 - **Clean Architecture**: Implements clean and hexagonal architecture principles.
 - **Dockerization**: Dockerization of the application and the database, to run the application in a Docker container.
 - **Automation**: Automation of common tasks, such as running run the application and the database in Docker, or running unit and integration tests.
-
 
 ## Getting Started
 
@@ -132,7 +131,8 @@ And now you can access the documentation at *http://localhost:8080/api/docs/*
 ## Project Structure
 
 For building the project, I decided to use an **architecture hexagonal** based on the principles of Clean Architecture.
-In this architecture, I have three main layeres for each entity: Domain, Application, and Infrastructure 
+In this architecture, I have three main layeres for each entity: Domain, Application, and Infrastructure.
+
 The Domain layer contains the domain entities, domain exceptions, respository interfaces, and all logic related to the domain.  The Application layer contains the use cases of the Application, and the Infrastructure layer contains the HTTP handlers, middlewares, repositories,  routes, and all three party dependencies.
 
 ```sh
