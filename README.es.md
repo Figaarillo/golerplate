@@ -6,10 +6,10 @@ GOlerplate es una plantilla para aplicaciones web en Golang. Esto significa que 
 
 ## Tecnologías
 
-- [gorilla/mux](https://github.com/gorilla/mux): HTTP router para construir servidores web con 🦍
-- [gorm](https://gorm.io): ORM para Go
-- [Docker](https://www.docker.com) & [Docker Compose](https://docs.docker.com/compose/): Para la contenedoraización
-- [Swagger](https://swagger.io): Documentación de API
+- [gorilla/mux](https://github.com/gorilla/mux): HTTP router para construir servidores web con 🦍.
+- [gorm](https://gorm.io): Librería de ORM para Golang.
+- [Docker](https://www.docker.com) & [Docker Compose](https://docs.docker.com/compose/): Para la contenedoraización.
+- [Swagger](https://swagger.io): Para la documentación de la API.
 
 ## Características
 
@@ -125,8 +125,9 @@ Y ahora puedes ver la generada en la ruta *http://localhost:8080/api/docs/*
 ## Estructura del proyecto
 
 Para la realización de este proyecto, decidí utilizar una arquitectura hexagonal basada en los principios de la Clean Architecture.
-Bajo esta estructura, el proyecto se compone de tres capas principales por cada entidad: Dominio, Aplicación y Infraestructura
-La capa de Dominio contiene las entidades de dominio, las excepciones de dominio, interfaces de repositorios y toda la lógica relacionada con el dominio. La capa de Aplicación contiene los casos de uso de la aplicación y la capa de Infraestructura contiene los componentes de la aplicación, como el servidor HTTP y la base de datos.
+Bajo esta estructura, el proyecto se compone de tres capas principales por cada entidad: Dominio, Aplicación y Infraestructura.
+
+La capa de Dominio contiene las entidades de dominio, las excepciones de dominio, interfaces de los repositorios y toda la lógica relacionada con el dominio. La capa de Aplicación contiene los casos de uso de la aplicación y la capa de Infraestructura contiene los componentes externos de la aplicación, como el servidor HTTP y la base de datos.
 
 ```sh
 .
