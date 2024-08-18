@@ -1,4 +1,4 @@
-.PHONY: all clean security test build run run.build docker.build docker.run docker.stop docker.run.test docker.stop.test docker.clean migrate.up migrate.down migrate.force swag
+.PHONY: all clean security test build run run.build docker.build docker.run docker.stop docker.run.test docker.stop.test docker.clean migrate.up migrate.down migrate.force docs
 
 ### VARIABLES ###
 APP_NAME = apiserver
@@ -88,5 +88,5 @@ migrate.down:
 migrate.force:
 	migrate -path $(MIGRATIONS_FOLDER) -database "$(DATABASE_URL)" force $(version)
 
-swag:
+docs:
 	./scripts/swag init -g cmd/api/main.go -d ./ -o ./docs
