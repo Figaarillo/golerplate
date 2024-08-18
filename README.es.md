@@ -6,12 +6,21 @@ GOlerplate es una plantilla para aplicaciones web en Golang. Esto significa que 
 
 ## Tecnologías
 
-- **Lenguaje**: Go
-- **Frameworks y Librerías**: Gorilla Mux, GORM
-- **Contenedores**: Docker, Docker Compose
-- **Documentación**: Swagger
+- [gorilla/mux](https://github.com/gorilla/mux): HTTP router para construir servidores web con 🦍
+- [gorm](https://gorm.io): ORM para Go
+- [Docker](https://www.docker.com) & [Docker Compose](https://docs.docker.com/compose/): Para la contenedoraización
+- [Swagger](https://swagger.io): Documentación de API
 
-## Comenzando
+## Características
+
+- **API REST**: Implementación de CRUD para entidades.
+- **Tests**: Pruebas unitarias e integradas, para validar el correcto funcionamiento de la aplicación.
+- **Documentació**n: Documentación de la API generada por Swagger.
+- **Arquitectura**: Implementación de principios de arquitectura limpia y hexagonal.
+- **Dockerización**: Dockerización de la aplicación y la base de datos, para ejecutar la aplicación de agnosticamente.
+- **Automatización**: Automatización ciertas tareas mediante comandos personalizados, como ejecutar la aplicación y la base de datos en Docker, o ejecutar pruebas unitarios.
+
+## Primeros pasos
 
 ### Requisitos previos
 
@@ -19,16 +28,16 @@ GOlerplate es una plantilla para aplicaciones web en Golang. Esto significa que 
 - [Docker Compose](https://docs.docker.com/compose/)
 - [Go](https://golang.org/doc/install) (opcional si deseas utilizar el proyecto de forma local)
 
-### Bajate el repositorio
+### Clona el repositorio
 
-1. Clona el repositorio:
+1. Clonar el repositorio:
 
 ```sh
 git clone https://github.com/Figaarillo/golerplate.git
 cd golerplate
 ```
 
-2. Copia el archivo `.env.example` a `.env`:
+2. Setear las variables de entorno. Copia el archivo `.env.example` a `.env`
 
 ```sh
 cp .env.example .env
@@ -48,23 +57,34 @@ make docker.run
 make run
 ```
 
+- Ejecutar la compilación de la aplicación localmente y la base de datos con Docker
+
+```sh
+make run.build
+```
+
 ### ¿Cómo ejecutar los test?
 
 #### Test Unitarios
 
-Para ejecutar todos los tests unitarios:
+- Para ejecutar todos los tests unitarios:
 
 ```sh
 make test.unit
 ```
+- Si desea ver el coverage de los tests unitarios:
 
-Para ejecutar un solo test unitario:
+```sh
+make test.unit.cover
+```
+
+-  Para ejecutar un solo test unitario:
 
 ```sh
 make test.unit.[entity_name]
 ```
 
-Por ejemplo, para ejecutar el test unitario de categoría:
+- Por ejemplo, para ejecutar el test unitario de categoría:
 
 ```sh
 make test.unit.category
@@ -90,7 +110,23 @@ Por ejemplo, para ejecutar el test de integración de categoría:
 make test.e2e.category
 ```
 
+### Documentación
+
+La documentación se generará usando [Swagger](https://swagger.io).
+
+Para generar la documentación:
+
+```sh
+make docs
+```
+
+Y ahora puedes ver la generada en la ruta *http://localhost:8080/api/docs/*
+
 ## Estructura del proyecto
+
+Para la realización de este proyecto, decidí utilizar una arquitectura hexagonal basada en los principios de la Clean Architecture.
+Bajo esta estructura, el proyecto se compone de tres capas principales por cada entidad: Dominio, Aplicación y Infraestructura
+La capa de Dominio contiene las entidades de dominio, las excepciones de dominio, interfaces de repositorios y toda la lógica relacionada con el dominio. La capa de Aplicación contiene los casos de uso de la aplicación y la capa de Infraestructura contiene los componentes de la aplicación, como el servidor HTTP y la base de datos.
 
 ```sh
 .
@@ -100,12 +136,13 @@ make test.e2e.category
 ├── internal
 │   ├── application
 │   │   └── usecase        # Casos de uso de la aplicación
+│   ├── bootstrap          # Inicialización de cada entidad
 │   ├── domain
-│   │   ├── entity         # Definición de entidades del dominio
+│   │   ├── entity         # Definición de entidades del dominio y pruebas unitarios
 │   │   ├── exception      # Manejo de excepciones del dominio
 │   │   └── repository     # Interfaces de repositorios
 │   ├── infrastructure
-│   │   ├── handler        # Manejadores de HTTP
+│   │   ├── handler        # Manejadores HTTP
 │   │   ├── middleware     # Middlewares HTTP
 │   │   ├── repository     # Implementaciones de repositorios
 │   │   └── router         # Definición de rutas
@@ -115,16 +152,9 @@ make test.e2e.category
 │   │   ├── exception      # Manejo de excepciones compartidas
 │   │   ├── utils          # Utilidades compartidas
 │   │   └── validation     # Validaciones compartidas
-│   └── test               # Pruebas unitarias y de integración
+│   └── test               # Pruebas integración
 └── scripts                # Scripts para automatización
 ```
-
-## Características
-
-- **API REST**: Implementación de CRUD para entidades.
-- **Pruebas**: Pruebas unitarias e integradas.
-- **Documentació**n: Documentación de API con Swagger.
-- **Arquitectura**: Implementa principios de arquitectura limpia y hexagonal.
 
 ## To-do
 

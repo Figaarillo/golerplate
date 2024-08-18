@@ -6,10 +6,20 @@ GOlerplate is a template for web applications in Golang. This means it can be a 
 
 ## Technologies
 
-- **Language**: Go
-- **Frameworks and Libraries**: Gorilla Mux, GORM
-- **Containers**: Docker, Docker Compose
-- **Documentation**: Swagger
+- **[gorilla/mux](https://github.com/gorilla/mux)**: HTTP router for building Go web servers with 🦍
+- **[gorm](https://gorm.io)**: ORM for Go
+- **[Docker](https://www.docker.com) & [Docker Compose](https://docs.docker.com/compose/)**: For the containerization
+- **[Swagger](https://swagger.io)**: API documentation
+
+## Features
+
+- **REST API**: CRUD implementation for entities.
+- **Tests**: Unit and integration tests, to validate the correct operation of the application.
+- **Documentation**: API documentation generated with Swagger.
+- **Clean Architecture**: Implements clean and hexagonal architecture principles.
+- **Dockerization**: Dockerization of the application and the database, to run the application in a Docker container.
+- **Automation**: Automation of common tasks, such as running run the application and the database in Docker, or running unit and integration tests.
+
 
 ## Getting Started
 
@@ -17,7 +27,7 @@ GOlerplate is a template for web applications in Golang. This means it can be a 
 
 - [Docker](https://docs.docker.com/get-docker/)
 - [Docker Compose](https://docs.docker.com/compose/)
-- [Go](https://golang.org/doc/install) (optional if you want to use CLI)
+- [Go](https://golang.org/doc/install) (optional if you want to use the project locally)
 
 ### Clone the repository
 
@@ -28,10 +38,16 @@ git clone https://github.com/Figaarillo/golerplate.git
 cd golerplate
 ```
 
-2. Copy the `.env.example` file to `.env`:
+2. Set up environment variables. Copy the `.env.example` file to `.env`:
 
 ```sh
 cp .env.example .env
+```
+
+3. Install dependencies:
+
+```sh
+go mod download
 ```
 
 ### Usage
@@ -47,24 +63,35 @@ make docker.run
 ```sh
 make run
 ```
+- Run the build of the server and database through Docker
+
+```sh
+make run.build
+```
 
 ### How to run tests?
 
 #### Unit Tests
 
-To run all unit tests:
+- To run all unit tests:
 
 ```sh
 make test.unit
 ```
 
-To run a single unit test:
+- If you want to see the coverage of the unit tests:
+
+```sh
+make test.unit.cover
+```
+
+- To run a single unit test:
 
 ```sh
 make test.unit.[entity_name]
 ```
 
-For example, to run the unit test for category:
+- For example, to run the unit test for category:
 
 ```sh
 make test.unit.category
@@ -90,7 +117,23 @@ For example, to run the integration test for category:
 make test.e2e.category
 ```
 
+### Documentation
+
+The documentation is generated with [Swagger](https://swagger.io/docs/2.0/).
+
+To generate the documentation, run:
+
+```sh
+make docs
+```
+
+And now you can access the documentation at *http://localhost:8080/api/docs/*
+
 ## Project Structure
+
+For building the project, I decided to use an **architecture hexagonal** based on the principles of Clean Architecture.
+In this architecture, I have three main layeres for each entity: Domain, Application, and Infrastructure 
+The Domain layer contains the domain entities, domain exceptions, respository interfaces, and all logic related to the domain.  The Application layer contains the use cases of the Application, and the Infrastructure layer contains the HTTP handlers, middlewares, repositories,  routes, and all three party dependencies.
 
 ```sh
 .
@@ -100,8 +143,9 @@ make test.e2e.category
 ├── internal
 │   ├── application
 │   │   └── usecase        # Application use cases
+│   ├── bootstrap          # Bootstrapper for each entity
 │   ├── domain
-│   │   ├── entity         # Domain entity definitions
+│   │   ├── entity         # Domain entity definitions and unit tests
 │   │   ├── exception      # Domain exception handling
 │   │   └── repository     # Repository interfaces
 │   ├── infrastructure
@@ -109,22 +153,14 @@ make test.e2e.category
 │   │   ├── middleware     # HTTP middlewares
 │   │   ├── repository     # Repository implementations
 │   │   └── router         # Route definitions
-│   ├── setup              # Initial setup
 │   ├── share
 │   │   ├── config         # Shared configuration
 │   │   ├── exception      # Shared exception handling
 │   │   ├── utils          # Shared utilities
 │   │   └── validation     # Shared validations
-│   └── test               # Unit and integration tests
+│   └── test               # Integration tests
 └── scripts                # Automation scripts
 ```
-
-## Features
-
-- REST API: CRUD implementation for entities.
-- Tests: Unit and integration tests.
-- Documentation: API documentation with Swagger.
-- Architecture: Implements clean and hexagonal architecture principles.
 
 ## To-do
 
