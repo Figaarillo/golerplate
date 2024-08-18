@@ -1,92 +1,124 @@
-.PHONY: all clean security test build run run.build docker.build docker.run docker.stop docker.run.test docker.stop.test docker.clean migrate.up migrate.down migrate.force docs
+.PHONY: all clean build test test.unit test.unit.cover test.e2e run run.build docker.build docker.run docker.stop docker.run.test docker.stop.test docker.clean docs
 
-### VARIABLES ###
+# ##################### VARIABLES ##################### #
+
 APP_NAME = apiserver
 BUILD_DIR = ./build
-MIGRATIONS_FOLDER = $(PWD)/migrations
 DATABASE_URL = postgres://${DATABASE_USER}:${DATABASE_PASS}@${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}?sslmode=disable
 
-### COMMANDS ###
+# ###################### COMMANDS ##################### #
+
 clean:
+	@echo " ╭────────────────────────────────────────╮ "
+	@echo " │             CLEANNIG BUILD             │ "
+	@echo " ╰────────────────────────────────────────╯ "
 	rm -rf $(BUILD_DIR)
 
-security:
-	gosec -quiet ./...
-
-test: security
-	go test -v -timeout 30s -coverprofile=cover.out -cover ./...
-	go tool cover -func=cover.out
-
+build: clean
+	@echo " ╭────────────────────────────────────────╮ "
+	@echo " │              BUILDING APP              │ "
+	@echo " ╰────────────────────────────────────────╯ "
+	CGO_ENABLED=0 go build -ldflags="-w -s" -o $(BUILD_DIR)/$(APP_NAME) ./cmd/api
 
 test.unit:
-	@echo "Running unit test..."
-	go test -v ./internal/domain/entity/
+	@echo " ╭────────────────────────────────────────╮ "
+	@echo " │         RUNNING ALL UNIT TESTS         │ "
+	@echo " ╰────────────────────────────────────────╯ "
+	go test -v -timeout 30s -coverprofile=cover.out -cover ./internal/domain/entity/
+
+test.unit.cover:
+	@echo " ╭────────────────────────────────────────╮ "
+	@echo " │         COVEARAGE OF ALL TESTS         │ "
+	@echo " ╰────────────────────────────────────────╯ "
+	go tool cover -func=cover.out
 
 test.unit.category:
-	@echo "Running unit test for category..."
+	@echo " ╭────────────────────────────────────────╮ "
+	@echo " │     RUNNING UNIT TEST FOR CATEGORY     │ "
+	@echo " ╰────────────────────────────────────────╯ "
 	go test -v ./internal/domain/entity/category_test.go
 
 test.unit.product:
-	@echo "Running unit test for product..."
+	@echo " ╭────────────────────────────────────────╮ "
+	@echo " │      RUNNING UNIT TEST FOR PRODUCT     │ "
+	@echo " ╰────────────────────────────────────────╯ "
 	go test -v ./internal/domain/entity/product_test.go
 
 test.e2e:
-	@echo "Running all E2E tests..."
+	@echo " ╭────────────────────────────────────────╮ "
+	@echo " │          RUNNING ALL E2E TESTS         │ "
+	@echo " ╰────────────────────────────────────────╯ "
 	go test -v ./internal/test/
 
 test.e2e.category:
-	@echo "Running E2E tests for Category..."
+	@echo " ╭────────────────────────────────────────╮ "
+	@echo " │     RUNNING E2E TESTS FOR CATEGORY     │ "
+	@echo " ╰────────────────────────────────────────╯ "
 	go test ./internal/test/ -run Category -v
 
 test.e2e.product:
-	@echo "Running E2E tests for Product..."
+	@echo " ╭────────────────────────────────────────╮ "
+	@echo " │      RUNNING E2E TESTS FOR PRODUCT     │ "
+	@echo " ╰────────────────────────────────────────╯ "
 	go test ./internal/test/ -run Product -v
 
-build: clean
-	CGO_ENABLED=0 go build -ldflags="-w -s" -o $(BUILD_DIR)/$(APP_NAME) ./cmd/api
-
 run: docker.run.db
-	@echo "Running local server..."
+	@echo " ╭────────────────────────────────────────╮ "
+	@echo " │         RUNNING SERVER IN LOCAL        │ "
+	@echo " ╰────────────────────────────────────────╯ "
 	DATABASE_HOST=localhost go run ./cmd/api/main.go
 
-run.build:
-	@echo "Running build app..."
-	$(BUILD_DIR)/$(APP_NAME)
+run.build: docker.run.db build
+	@echo " ╭────────────────────────────────────────╮ "
+	@echo " │    RUNNING BUILD OF SERVER IN LOCAL    │ "
+	@echo " ╰────────────────────────────────────────╯ "
+	DATABASE_HOST=localhost ./build/apiserver
 
 docker.build:
+	@echo " ╭────────────────────────────────────────╮ "
+	@echo " │       BUILDING DOCKER CONTAINERS       │ "
+	@echo " ╰────────────────────────────────────────╯ "
 	docker-compose build
 
-docker.run: swag docker.clean docker.build
-	@echo "Runnung server in docker container..."
+docker.run: docs docker.clean docker.build
+	@echo " ╭────────────────────────────────────────╮ "
+	@echo " │        RUNNING SERVER IN DOCKER        │ "
+	@echo " ╰────────────────────────────────────────╯ "
 	docker-compose up -d database apiserver
 
 docker.run.db:
+	@echo " ╭────────────────────────────────────────╮ "
+	@echo " │       RUNNING DATABASE CONTAINER       │ "
+	@echo " ╰────────────────────────────────────────╯ "
 	docker-compose up -d database
 
 docker.run.test:
-	@echo "Running database for testing..."
+	@echo " ╭────────────────────────────────────────╮ "
+	@echo " │  RUNNING DATABASE CONTAINER FOR TESTS  │ "
+	@echo " ╰────────────────────────────────────────╯ "
 	docker-compose up -d database-test
 
 docker.stop:
-	@echo "Stop docker container..."
+	@echo " ╭────────────────────────────────────────╮ "
+	@echo " │     STOPPING ALL DOCKER CONTAINERS     │ "
+	@echo " ╰────────────────────────────────────────╯ "
 	docker-compose stop database apiserver database-test
 
 docker.stop.test:
-	@echo "Stop docker container for testing..."
+	@echo " ╭────────────────────────────────────────╮ "
+	@echo " │      STOPPING CONTAINER FOR TESTS      │ "
+	@echo " ╰────────────────────────────────────────╯ "
 	docker-compose stop database-test
 	docker-compose rm -f database-test
 
 docker.clean:
+	@echo " ╭────────────────────────────────────────╮ "
+	@echo " │        CLEANNING DOCKER VOLUMES        │ "
+	@echo " ╰────────────────────────────────────────╯ "
 	docker-compose down --volumes
 
-migrate.up:
-	migrate -path $(MIGRATIONS_FOLDER) -database "$(DATABASE_URL)" up
-
-migrate.down:
-	migrate -path $(MIGRATIONS_FOLDER) -database "$(DATABASE_URL)" down
-
-migrate.force:
-	migrate -path $(MIGRATIONS_FOLDER) -database "$(DATABASE_URL)" force $(version)
-
 docs:
+	@echo " ╭────────────────────────────────────────╮ "
+	@echo " │         GENERATING SWAGGER DOC         │ "
+	@echo " ╰────────────────────────────────────────╯ "
 	./scripts/swag init -g cmd/api/main.go -d ./ -o ./docs
