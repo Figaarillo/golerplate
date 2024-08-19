@@ -86,12 +86,6 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	accessToken := utils.GetHeader(r, "access_token")
-	if _, err := h.authUC.IsAccessTokenValid(accessToken); err != nil {
-		utils.HandleHTTPError(w, fmt.Errorf("invalid access token"), http.StatusUnauthorized)
-		return
-	}
-
 	user, err := h.userUC.GetByProp("email", authUser.Email)
 	if err != nil {
 		utils.HandleHTTPError(w, err, http.StatusNotFound)
