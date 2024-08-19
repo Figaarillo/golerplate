@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/Figaarillo/golerplate/internal/infrastructure/handler"
+	"github.com/Figaarillo/golerplate/internal/infrastructure/middleware"
 	"github.com/gorilla/mux"
 )
 
@@ -22,6 +23,7 @@ func NewOrderRouter(router *mux.Router, handler handler.OrderHandler) *OrderRout
 }
 
 func (o *OrderRouter) SetupRoutes() {
+	o.router.Use(middleware.MiddlewareAuthorization)
 	o.router.HandleFunc("", o.handler.List).Methods(http.MethodGet)
 	o.router.HandleFunc("/{id}", o.handler.GetByID).Methods(http.MethodGet)
 	o.router.HandleFunc("", o.handler.GetByUserID).Methods(http.MethodGet)

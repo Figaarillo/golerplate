@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/Figaarillo/golerplate/internal/infrastructure/handler"
+	"github.com/Figaarillo/golerplate/internal/infrastructure/middleware"
 	"github.com/gorilla/mux"
 )
 
@@ -22,6 +23,7 @@ func NewCategoryRouter(router *mux.Router, handler handler.CategoryHandler) *Cat
 }
 
 func (c *CategoryRouter) SetupRoutes() {
+	c.router.Use(middleware.MiddlewareAuthorization)
 	c.router.HandleFunc("", c.handler.ListAll).Methods(http.MethodGet)
 	c.router.HandleFunc("/{id}", c.handler.GetByID).Methods(http.MethodGet)
 	c.router.HandleFunc("", c.handler.Create).Methods(http.MethodPost)
