@@ -1,6 +1,10 @@
 package entity
 
-import "time"
+import (
+	"time"
+
+	"github.com/golang-jwt/jwt"
+)
 
 type Token struct {
 	ExpiresAt    time.Time
@@ -9,6 +13,13 @@ type Token struct {
 	RefreshToken string
 	TokenType    string
 	UserID       string
+}
+
+type Claims struct {
+	jwt.StandardClaims
+	UserID    string `json:"user_id"`
+	IssuedAt  int64  `json:"iat"`
+	ExpiresAt int64  `json:"exp"`
 }
 
 type AuthUser struct {
