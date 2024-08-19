@@ -2,6 +2,7 @@ package utils
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -36,6 +37,12 @@ func DecodeReqBody(r *http.Request, body interface{}) error {
 	return nil
 }
 
-func GetHeader(r *http.Request, key string) string {
-	return r.Header.Get(key)
+func GetHeader(r *http.Request, key string) (string, error) {
+	header := r.Header.Get(key)
+	if header == "" {
+		// return "", exeption.ErrMissingHeader
+		return "", fmt.Errorf("missing header: %s", key)
+	}
+
+	return header, nil
 }
