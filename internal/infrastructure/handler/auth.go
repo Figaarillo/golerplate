@@ -8,6 +8,7 @@ import (
 	"github.com/Figaarillo/golerplate/internal/domain/entity"
 	"github.com/Figaarillo/golerplate/internal/domain/repository"
 	"github.com/Figaarillo/golerplate/internal/shared/config"
+	"github.com/Figaarillo/golerplate/internal/shared/constants"
 	"github.com/Figaarillo/golerplate/internal/shared/utils"
 	"github.com/go-playground/validator/v10"
 )
@@ -61,7 +62,11 @@ func (h *AuthHandler) Signup(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *AuthHandler) RefreshToken(w http.ResponseWriter, r *http.Request) {
-	refreshToken := utils.GetHeader(r, "refresh-token")
+	refreshToken, err := utils.GetHeader(r, constants.RefreshToken)
+	if err != nil {
+		utils.HandleHTTPError(w, err, http.StatusUnauthorized)
+		return
+	}
 
 	newAccessToken, err := h.authUC.RefreshAndStoreAccessToken(refreshToken)
 	if err != nil {
