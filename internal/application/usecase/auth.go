@@ -6,6 +6,7 @@ import (
 
 	"github.com/Figaarillo/golerplate/internal/domain/entity"
 	"github.com/Figaarillo/golerplate/internal/domain/repository"
+	"github.com/Figaarillo/golerplate/internal/infrastructure/service"
 	"github.com/Figaarillo/golerplate/internal/shared/config"
 	"github.com/golang-jwt/jwt"
 )
@@ -22,15 +23,8 @@ func NewAuthUseCase(env *config.EnvVars, r repository.AuthRepository) *AuthUseCa
 	}
 }
 
-type Claims struct {
-	jwt.StandardClaims
-	UserID    string `json:"user_id"`
-	IssuedAt  int64  `json:"iat"`
-	ExpiresAt int64  `json:"exp"`
-}
-
 func (uc *AuthUseCase) GenerateAccessToken(userID string) (string, error) {
-	claims := Claims{
+	claims := &entity.Claims{
 		UserID:    userID,
 		IssuedAt:  time.Now().Unix(),
 		ExpiresAt: time.Now().Add(time.Second * time.Duration(uc.env.JWT_EXPIRATION)).Unix(),
@@ -41,7 +35,7 @@ func (uc *AuthUseCase) GenerateAccessToken(userID string) (string, error) {
 }
 
 func (uc *AuthUseCase) GenerateRefreshToken(userID string) (string, error) {
-	claims := Claims{
+	claims := &entity.Claims{
 		UserID:    userID,
 		IssuedAt:  time.Now().Unix(),
 		ExpiresAt: time.Now().Add(time.Second * time.Duration(uc.env.JWT_REFRESH_EXPIRATION)).Unix(),
@@ -89,32 +83,12 @@ func (uc *AuthUseCase) GenerateAndStoreTokens(userId string) (entity.Token, erro
 	return jwt, nil
 }
 
-func (uc *AuthUseCase) validateAndExtractClaims(tokenString string, secretKey []byte) (*Claims, error) {
-	claims := &Claims{}
-	token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
-		}
-		return secretKey, nil
-	})
-
-	if err != nil || !token.Valid {
-		return nil, err
-	}
-
-	if claims.ExpiresAt < time.Now().Unix() {
-		return nil, fmt.Errorf("token has expired")
-	}
-
-	return claims, nil
+func (uc *AuthUseCase) IsRefreshTokenValid(refreshToken string) (*entity.Claims, error) {
+	return service.VerifyJWTAndReturnClaims(refreshToken, []byte(uc.env.JWT_SECRET_KEY_REFRESH))
 }
 
-func (uc *AuthUseCase) IsRefreshTokenValid(refreshToken string) (*Claims, error) {
-	return uc.validateAndExtractClaims(refreshToken, []byte(uc.env.JWT_SECRET_KEY_REFRESH))
-}
-
-func (uc *AuthUseCase) IsAccessTokenValid(accessToken string) (*Claims, error) {
-	return uc.validateAndExtractClaims(accessToken, []byte(uc.env.JWT_SECRET_KEY))
+func (uc *AuthUseCase) IsAccessTokenValid(accessToken string) (*entity.Claims, error) {
+	return service.VerifyJWTAndReturnClaims(accessToken, []byte(uc.env.JWT_SECRET_KEY))
 }
 
 func (uc *AuthUseCase) RefreshAndStoreAccessToken(refreshToken string) (string, error) {
