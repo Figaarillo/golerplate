@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/Figaarillo/golerplate/internal/application/usecase"
@@ -39,11 +40,11 @@ func (h *ProductHandler) ListAll(w http.ResponseWriter, r *http.Request) {
 
 	products, err := h.usecase.ListAll(offset, limit)
 	if err != nil {
-		utils.HandleHTTPError(w, err, http.StatusNotFound)
+		utils.NewHTTPResponse(w).NotFound(err.Error(), nil)
 		return
 	}
 
-	utils.HandleHTTPResponse(w, "Products retrieved successfully", http.StatusOK, products)
+	utils.NewHTTPResponse(w).OK("Products retrieved successfully", products)
 }
 
 // GetByID godoc
@@ -58,17 +59,17 @@ func (h *ProductHandler) ListAll(w http.ResponseWriter, r *http.Request) {
 func (h *ProductHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 	id, err := utils.GetURLParam(r, "id")
 	if err != nil {
-		utils.HandleHTTPError(w, err, http.StatusInternalServerError)
+		utils.NewHTTPResponse(w).InternalServerError(err.Error(), nil)
 		return
 	}
 
 	product, err := h.usecase.GetByID(id)
 	if err != nil {
-		utils.HandleHTTPError(w, err, http.StatusNotFound)
+		utils.NewHTTPResponse(w).NotFound(err.Error(), nil)
 		return
 	}
 
-	utils.HandleHTTPResponse(w, "Product retrieved successfully", http.StatusOK, product)
+	utils.NewHTTPResponse(w).OK("Product retrieved successfully", product)
 }
 
 // Create godoc
@@ -85,22 +86,22 @@ func (h *ProductHandler) Create(w http.ResponseWriter, r *http.Request) {
 
 	var product entity.Product
 	if err := utils.DecodeReqBody(r, &product); err != nil {
-		utils.HandleHTTPError(w, err, http.StatusInternalServerError)
+		utils.NewHTTPResponse(w).InternalServerError(err.Error(), nil)
 		return
 	}
 
 	if err := h.validator.Struct(product); err != nil {
 		errors := err.(validator.ValidationErrors)
-		utils.HandleHTTPError(w, errors, http.StatusUnprocessableEntity)
+		utils.NewHTTPResponse(w).InternalServerError(fmt.Sprintf("validation error: %s", errors), nil)
 		return
 	}
 
 	if err := h.usecase.Create(product); err != nil {
-		utils.HandleHTTPError(w, err, http.StatusConflict)
+		utils.NewHTTPResponse(w).Conflict(err.Error(), nil)
 		return
 	}
 
-	utils.HandleHTTPResponse(w, "Product created successfully", http.StatusCreated, nil)
+	utils.NewHTTPResponse(w).Created("Product created successfully", nil)
 }
 
 // Update godoc
@@ -118,22 +119,22 @@ func (h *ProductHandler) Update(w http.ResponseWriter, r *http.Request) {
 
 	id, err := utils.GetURLParam(r, "id")
 	if err != nil {
-		utils.HandleHTTPError(w, err, http.StatusInternalServerError)
+		utils.NewHTTPResponse(w).InternalServerError(err.Error(), nil)
 		return
 	}
 
 	var payload entity.Product
 	if err := utils.DecodeReqBody(r, &payload); err != nil {
-		utils.HandleHTTPError(w, err, http.StatusInternalServerError)
+		utils.NewHTTPResponse(w).InternalServerError(err.Error(), nil)
 		return
 	}
 
 	if err := h.usecase.Update(id, payload); err != nil {
-		utils.HandleHTTPError(w, err, http.StatusConflict)
+		utils.NewHTTPResponse(w).Conflict(err.Error(), nil)
 		return
 	}
 
-	utils.HandleHTTPResponse(w, "Product updated successfully", http.StatusOK, nil)
+	utils.NewHTTPResponse(w).OK("Product updated successfully", nil)
 }
 
 // Delete godoc
@@ -148,14 +149,14 @@ func (h *ProductHandler) Update(w http.ResponseWriter, r *http.Request) {
 func (h *ProductHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	id, err := utils.GetURLParam(r, "id")
 	if err != nil {
-		utils.HandleHTTPError(w, err, http.StatusInternalServerError)
+		utils.NewHTTPResponse(w).InternalServerError(err.Error(), nil)
 		return
 	}
 
 	if err := h.usecase.Delete(id); err != nil {
-		utils.HandleHTTPError(w, err, http.StatusNotFound)
+		utils.NewHTTPResponse(w).NotFound(err.Error(), nil)
 		return
 	}
 
-	utils.HandleHTTPResponse(w, "Product deleted successfully", http.StatusOK, nil)
+	utils.NewHTTPResponse(w).OK("Product deleted successfully", nil)
 }
