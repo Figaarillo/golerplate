@@ -42,7 +42,7 @@ func (h *AuthHandler) Signup(w http.ResponseWriter, r *http.Request) {
 		for _, err := range errors {
 			validationErrors[err.Field()] = err.Tag()
 		}
-		utils.NewHTTPResponse(w).UnprocessableEntity(err.Error(), nil)
+		utils.NewHTTPResponse(w).InternalServerError(err.Error(), nil)
 		return
 	}
 
@@ -79,13 +79,13 @@ func (h *AuthHandler) RefreshToken(w http.ResponseWriter, r *http.Request) {
 func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 	var authUser entity.AuthUser
 	if err := utils.DecodeReqBody(r, &authUser); err != nil {
-		utils.NewHTTPResponse(w).UnprocessableEntity(err.Error(), nil)
+		utils.NewHTTPResponse(w).InternalServerError(err.Error(), nil)
 		return
 	}
 
 	if err := h.validator.Struct(authUser); err != nil {
 		errors := err.(validator.ValidationErrors)
-		utils.NewHTTPResponse(w).UnprocessableEntity(fmt.Sprintf("validation error: %s", errors), nil)
+		utils.NewHTTPResponse(w).InternalServerError(fmt.Sprintf("validation error: %s", errors), nil)
 		return
 	}
 
