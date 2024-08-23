@@ -33,8 +33,7 @@ func (h *AuthHandler) Signup(w http.ResponseWriter, r *http.Request) {
 	var err error
 
 	if err := utils.DecodeReqBody(r, &user); err != nil {
-		utils.HandleHTTPError(w, err, http.StatusInternalServerError)
-		return
+		utils.NewHTTPResponse(w).InternalServerError(err.Error(), nil)
 	}
 
 	if err := h.validator.Struct(user); err != nil {
@@ -43,70 +42,69 @@ func (h *AuthHandler) Signup(w http.ResponseWriter, r *http.Request) {
 		for _, err := range errors {
 			validationErrors[err.Field()] = err.Tag()
 		}
-		utils.HandleHTTPError(w, errors, http.StatusUnprocessableEntity)
+		utils.NewHTTPResponse(w).UnprocessableEntity(err.Error(), nil)
 		return
 	}
 
 	if user, err = h.userUC.Create(user); err != nil {
-		utils.HandleHTTPError(w, err, http.StatusConflict)
+		utils.NewHTTPResponse(w).Conflict(err.Error(), nil)
 		return
 	}
 
 	token, err := h.authUC.GenerateTokens(user.ID.String())
 	if err != nil {
-		utils.HandleHTTPError(w, err, http.StatusInternalServerError)
+		utils.NewHTTPResponse(w).InternalServerError(err.Error(), nil)
 		return
 	}
 
-	utils.HandleHTTPResponse(w, "User registered successfully", http.StatusCreated, token)
+	utils.NewHTTPResponse(w).OK("User registered successfully", token)
 }
 
 func (h *AuthHandler) RefreshToken(w http.ResponseWriter, r *http.Request) {
 	refreshToken, err := utils.GetHeader(r, constants.RefreshToken)
 	if err != nil {
-		utils.HandleHTTPError(w, err, http.StatusUnauthorized)
+		utils.NewHTTPResponse(w).Unauthorized(err.Error(), nil)
 		return
 	}
 
 	newAccessToken, err := h.authUC.RefreshAndStoreAccessToken(refreshToken)
 	if err != nil {
-		utils.HandleHTTPError(w, err, http.StatusUnauthorized)
+		utils.NewHTTPResponse(w).Unauthorized(err.Error(), nil)
 		return
 	}
-	utils.HandleHTTPResponse(w, "New access token generated successfully", http.StatusOK, map[string]string{
-		"access_token": newAccessToken,
-	})
+
+	utils.NewHTTPResponse(w).OK("New access token generated successfully", map[string]string{"access_token": newAccessToken})
 }
 
 func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 	var authUser entity.AuthUser
 	if err := utils.DecodeReqBody(r, &authUser); err != nil {
-		http.Error(w, err.Error(), http.StatusUnprocessableEntity)
+		utils.NewHTTPResponse(w).UnprocessableEntity(err.Error(), nil)
 		return
 	}
 
 	if err := h.validator.Struct(authUser); err != nil {
 		errors := err.(validator.ValidationErrors)
-		http.Error(w, fmt.Sprintf("validatoin error: %s", errors), http.StatusUnprocessableEntity)
+		utils.NewHTTPResponse(w).UnprocessableEntity(fmt.Sprintf("validation error: %s", errors), nil)
 		return
 	}
 
 	user, err := h.userUC.GetByProp("email", authUser.Email)
 	if err != nil {
-		utils.HandleHTTPError(w, err, http.StatusNotFound)
+		utils.NewHTTPResponse(w).NotFound(err.Error(), nil)
 		return
 	}
 
 	if err := user.ComparePassword(authUser.Password); err != nil {
-		utils.HandleHTTPError(w, err, http.StatusUnauthorized)
+		utils.NewHTTPResponse(w).Unauthorized(err.Error(), nil)
 		return
 	}
 
 	token, err := h.authUC.GenerateTokens(user.ID.String())
 	if err != nil {
-		utils.HandleHTTPError(w, err, http.StatusInternalServerError)
+		utils.NewHTTPResponse(w).InternalServerError(err.Error(), nil)
 		return
 	}
 
-	utils.HandleHTTPResponse(w, "User logged in successfully", http.StatusOK, token)
+	utils.NewHTTPResponse(w).OK("User logged in successfully", token)
 }
