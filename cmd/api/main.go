@@ -20,6 +20,9 @@ import (
 // @contact.email axel.leonardi.22@gmail.com
 // @license.name Apache 2.0
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
+// @SecurityDefinitions.apiKey Bearer
+// @in header
+// @name access-token
 // @BasePath /api
 // @host localhost:8080
 func main() {

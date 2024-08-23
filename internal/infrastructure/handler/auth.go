@@ -20,9 +20,9 @@ type AuthHandler struct {
 	validator   *validator.Validate
 }
 
-func NewAuthHandler(env *config.EnvVars, authRepo repository.AuthRepository, userRepo repository.UserRepository) *AuthHandler {
+func NewAuthHandler(env *config.EnvVars, userRepo repository.UserRepository) *AuthHandler {
 	return &AuthHandler{
-		authUC:    usecase.NewAuthUseCase(env, authRepo),
+		authUC:    usecase.NewAuthUseCase(env),
 		userUC:    usecase.NewUserUseCase(userRepo),
 		validator: validator.New(),
 	}
@@ -52,7 +52,7 @@ func (h *AuthHandler) Signup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, err := h.authUC.GenerateAndStoreTokens(user.ID.String())
+	token, err := h.authUC.GenerateTokens(user.ID.String())
 	if err != nil {
 		utils.HandleHTTPError(w, err, http.StatusInternalServerError)
 		return
@@ -102,7 +102,7 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, err := h.authUC.GenerateAndStoreTokens(user.ID.String())
+	token, err := h.authUC.GenerateTokens(user.ID.String())
 	if err != nil {
 		utils.HandleHTTPError(w, err, http.StatusInternalServerError)
 		return
