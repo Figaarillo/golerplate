@@ -58,6 +58,11 @@ func (h HTTPResponse) Conflict(msg string, body interface{}) {
 	h.writeResponse(http.StatusConflict, msg, body)
 }
 
+func (h HTTPResponse) UnprocessableEntity(msg string, body interface{}) {
+	h.writer.WriteHeader(http.StatusUnprocessableEntity)
+	h.writeResponse(http.StatusUnprocessableEntity, msg, body)
+}
+
 func (h HTTPResponse) InternalServerError(msg string, body interface{}) {
 	h.writer.WriteHeader(http.StatusInternalServerError)
 	h.writeResponse(http.StatusInternalServerError, msg, body)
