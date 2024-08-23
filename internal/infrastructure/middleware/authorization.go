@@ -15,13 +15,13 @@ func MiddlewareAuthorization(next http.Handler) http.Handler {
 		key := env.JWT_SECRET_KEY
 		accessToken, err := utils.GetHeader(r, constants.AccessToken)
 		if err != nil {
-			utils.HandleHTTPError(w, err, http.StatusUnauthorized)
+			utils.NewHTTPResponse(w).Unauthorized(err.Error(), nil)
 			return
 		}
 
 		_, err = service.VerifyJWTAndReturnClaims(accessToken, []byte(key))
 		if err != nil {
-			utils.HandleHTTPError(w, err, http.StatusUnauthorized)
+			utils.NewHTTPResponse(w).Unauthorized(err.Error(), nil)
 			return
 		}
 
