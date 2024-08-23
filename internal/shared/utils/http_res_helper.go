@@ -2,29 +2,63 @@ package utils
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 )
 
 type Response struct {
 	Body interface{} `json:"body"`
 	Msg  string      `json:"message"`
+	Code int         `json:"code"`
 }
 
-func HandleHTTPResponse(w http.ResponseWriter, msg string, code int, body interface{}) {
-	var res Response
+type HTTPResponse struct{ writer http.ResponseWriter }
 
-	res.Body = body
-	res.Msg = msg
-
+func NewHTTPResponse(w http.ResponseWriter) HTTPResponse {
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(code)
-	json.NewEncoder(w).Encode(res)
+	return HTTPResponse{w}
 }
 
-func HandleHTTPError(w http.ResponseWriter, err error, code int) {
-	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
-	w.Header().Set("X-Content-Type-Options", "nosniff")
-	w.WriteHeader(code)
-	fmt.Fprint(w, err)
+func (h HTTPResponse) writeResponse(code int, msg string, body interface{}) {
+	res := Response{Code: code, Msg: msg, Body: body}
+	json.NewEncoder(h.writer).Encode(res)
+}
+
+func (h HTTPResponse) OK(msg string, body interface{}) {
+	h.writer.WriteHeader(http.StatusOK)
+	h.writeResponse(http.StatusOK, msg, body)
+}
+
+func (h HTTPResponse) Created(msg string, body interface{}) {
+	h.writer.WriteHeader(http.StatusCreated)
+	h.writeResponse(http.StatusCreated, msg, body)
+}
+
+func (h HTTPResponse) BadRequest(msg string, body interface{}) {
+	h.writer.WriteHeader(http.StatusBadRequest)
+	h.writeResponse(http.StatusBadRequest, msg, body)
+}
+
+func (h HTTPResponse) Unauthorized(msg string, body interface{}) {
+	h.writer.WriteHeader(http.StatusUnauthorized)
+	h.writeResponse(http.StatusUnauthorized, msg, body)
+}
+
+func (h HTTPResponse) Forbidden(msg string, body interface{}) {
+	h.writer.WriteHeader(http.StatusForbidden)
+	h.writeResponse(http.StatusForbidden, msg, body)
+}
+
+func (h HTTPResponse) NotFound(msg string, body interface{}) {
+	h.writer.WriteHeader(http.StatusNotFound)
+	h.writeResponse(http.StatusNotFound, msg, body)
+}
+
+func (h HTTPResponse) Conflict(msg string, body interface{}) {
+	h.writer.WriteHeader(http.StatusConflict)
+	h.writeResponse(http.StatusConflict, msg, body)
+}
+
+func (h HTTPResponse) InternalServerError(msg string, body interface{}) {
+	h.writer.WriteHeader(http.StatusInternalServerError)
+	h.writeResponse(http.StatusInternalServerError, msg, body)
 }
