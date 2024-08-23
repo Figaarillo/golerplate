@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/Figaarillo/golerplate/internal/application/usecase"
@@ -39,11 +40,11 @@ func (h *CategoryHandler) ListAll(w http.ResponseWriter, r *http.Request) {
 
 	categories, err := h.usecase.ListAll(offset, limit)
 	if err != nil {
-		utils.HandleHTTPError(w, err, http.StatusNotFound)
+		utils.NewHTTPResponse(w).NotFound(err.Error(), nil)
 		return
 	}
 
-	utils.HandleHTTPResponse(w, "Categories retrieved successfully", http.StatusOK, categories)
+	utils.NewHTTPResponse(w).OK("Categories retrieved successfully", categories)
 }
 
 // GetByID godoc
@@ -58,17 +59,17 @@ func (h *CategoryHandler) ListAll(w http.ResponseWriter, r *http.Request) {
 func (h *CategoryHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 	id, err := utils.GetURLParam(r, "id")
 	if err != nil {
-		utils.HandleHTTPError(w, err, http.StatusInternalServerError)
+		utils.NewHTTPResponse(w).InternalServerError(err.Error(), nil)
 		return
 	}
 
 	category, err := h.usecase.GetByID(id)
 	if err != nil {
-		utils.HandleHTTPError(w, err, http.StatusNotFound)
+		utils.NewHTTPResponse(w).NotFound(err.Error(), nil)
 		return
 	}
 
-	utils.HandleHTTPResponse(w, "Category retrieved successfully", http.StatusOK, category)
+	utils.NewHTTPResponse(w).OK("Category retrieved successfully", category)
 }
 
 // Create godoc
@@ -85,22 +86,23 @@ func (h *CategoryHandler) Create(w http.ResponseWriter, r *http.Request) {
 
 	var category entity.Category
 	if err := utils.DecodeReqBody(r, &category); err != nil {
-		utils.HandleHTTPError(w, err, http.StatusInternalServerError)
+		utils.NewHTTPResponse(w).InternalServerError(err.Error(), nil)
 		return
 	}
 
 	if err := h.validator.Struct(category); err != nil {
 		errors := err.(validator.ValidationErrors)
-		utils.HandleHTTPError(w, errors, http.StatusUnprocessableEntity)
+		utils.NewHTTPResponse(w).InternalServerError(fmt.Sprintf("validation error: %s", errors), nil)
 		return
 	}
 
+	// TODO: modify this to use usecase to can return the category
 	if err := h.usecase.Create(category); err != nil {
-		utils.HandleHTTPError(w, err, http.StatusConflict)
+		utils.NewHTTPResponse(w).Conflict(err.Error(), nil)
 		return
 	}
 
-	utils.HandleHTTPResponse(w, "Category created successfully", http.StatusCreated, nil)
+	utils.NewHTTPResponse(w).Created("Category created successfully", map[string]string{"id": category.ID.String()})
 }
 
 // Update godoc
@@ -118,22 +120,22 @@ func (h *CategoryHandler) Update(w http.ResponseWriter, r *http.Request) {
 
 	id, err := utils.GetURLParam(r, "id")
 	if err != nil {
-		utils.HandleHTTPError(w, err, http.StatusInternalServerError)
+		utils.NewHTTPResponse(w).InternalServerError(err.Error(), nil)
 		return
 	}
 
 	var category entity.Category
 	if err := utils.DecodeReqBody(r, &category); err != nil {
-		utils.HandleHTTPError(w, err, http.StatusInternalServerError)
+		utils.NewHTTPResponse(w).InternalServerError(err.Error(), nil)
 		return
 	}
 
 	if err := h.usecase.Update(id, category); err != nil {
-		utils.HandleHTTPError(w, err, http.StatusConflict)
+		utils.NewHTTPResponse(w).Conflict(err.Error(), nil)
 		return
 	}
 
-	utils.HandleHTTPResponse(w, "Category updated successfully", http.StatusOK, nil)
+	utils.NewHTTPResponse(w).OK("Category updated successfully", map[string]string{"id": id})
 }
 
 // Delete godoc
@@ -148,14 +150,14 @@ func (h *CategoryHandler) Update(w http.ResponseWriter, r *http.Request) {
 func (h *CategoryHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	id, err := utils.GetURLParam(r, "id")
 	if err != nil {
-		utils.HandleHTTPError(w, err, http.StatusInternalServerError)
+		utils.NewHTTPResponse(w).InternalServerError(err.Error(), nil)
 		return
 	}
 
 	if err := h.usecase.Delete(id); err != nil {
-		utils.HandleHTTPError(w, err, http.StatusNotFound)
+		utils.NewHTTPResponse(w).NotFound(err.Error(), nil)
 		return
 	}
 
-	utils.HandleHTTPResponse(w, "Category deleted successfully", http.StatusOK, nil)
+	utils.NewHTTPResponse(w).OK("Category deleted successfully", nil)
 }
