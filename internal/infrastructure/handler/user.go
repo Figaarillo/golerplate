@@ -40,11 +40,11 @@ func (h *UserHandler) ListAll(w http.ResponseWriter, r *http.Request) {
 
 	users, err := h.usecase.ListAll(offset, limit)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusNotFound)
+		utils.NewHTTPResponse(w).NotFound(err.Error(), nil)
 		return
 	}
 
-	utils.HandleHTTPResponse(w, "Users retrieved successfully", http.StatusOK, users)
+	utils.NewHTTPResponse(w).OK("Users retrieved successfully", users)
 }
 
 // GetByID godoc
@@ -59,17 +59,17 @@ func (h *UserHandler) ListAll(w http.ResponseWriter, r *http.Request) {
 func (h *UserHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 	id, err := utils.GetURLParam(r, "id")
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		utils.NewHTTPResponse(w).InternalServerError(err.Error(), nil)
 		return
 	}
 
 	user, err := h.usecase.GetByID(id)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusNotFound)
+		utils.NewHTTPResponse(w).NotFound(err.Error(), nil)
 		return
 	}
 
-	utils.HandleHTTPResponse(w, "User retrieved successfully", http.StatusOK, user)
+	utils.NewHTTPResponse(w).OK("User retrieved successfully", user)
 }
 
 // Create godoc
@@ -84,24 +84,23 @@ func (h *UserHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 func (h *UserHandler) Create(w http.ResponseWriter, r *http.Request) {
 	var payload entity.User
 	if err := utils.DecodeReqBody(r, &payload); err != nil {
-		http.Error(w, err.Error(), http.StatusUnprocessableEntity)
+		utils.NewHTTPResponse(w).InternalServerError(err.Error(), nil)
 		return
 	}
 
 	if err := h.validator.Struct(payload); err != nil {
 		errors := err.(validator.ValidationErrors)
-		http.Error(w, fmt.Sprintf("validatoin error: %s", errors), http.StatusUnprocessableEntity)
+		utils.NewHTTPResponse(w).InternalServerError(fmt.Sprintf("validation error: %s", errors), nil)
 		return
 	}
 
 	user, err := h.usecase.Create(payload)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusConflict)
+		utils.NewHTTPResponse(w).Conflict(err.Error(), nil)
 		return
 	}
 
-	res := map[string]string{"id": user.ID.String()}
-	utils.HandleHTTPResponse(w, "User created successfully", http.StatusCreated, res)
+	utils.NewHTTPResponse(w).Created("User created successfully", map[string]string{"id": user.ID.String()})
 }
 
 // Update godoc
@@ -117,22 +116,22 @@ func (h *UserHandler) Create(w http.ResponseWriter, r *http.Request) {
 func (h *UserHandler) Update(w http.ResponseWriter, r *http.Request) {
 	id, err := utils.GetURLParam(r, "id")
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		utils.NewHTTPResponse(w).InternalServerError(err.Error(), nil)
 		return
 	}
 
 	var payload entity.User
 	if err := utils.DecodeReqBody(r, &payload); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		utils.NewHTTPResponse(w).InternalServerError(err.Error(), nil)
 		return
 	}
 
 	if err := h.usecase.Update(id, payload); err != nil {
-		http.Error(w, err.Error(), http.StatusConflict)
+		utils.NewHTTPResponse(w).Conflict(err.Error(), nil)
 		return
 	}
 
-	utils.HandleHTTPResponse(w, "User updated successfully", http.StatusOK, nil)
+	utils.NewHTTPResponse(w).OK("User updated successfully", nil)
 }
 
 // Delete godoc
@@ -147,14 +146,14 @@ func (h *UserHandler) Update(w http.ResponseWriter, r *http.Request) {
 func (h *UserHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	id, err := utils.GetURLParam(r, "id")
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		utils.NewHTTPResponse(w).InternalServerError(err.Error(), nil)
 		return
 	}
 
 	if err := h.usecase.Delete(id); err != nil {
-		http.Error(w, err.Error(), http.StatusNotFound)
+		utils.NewHTTPResponse(w).NotFound(err.Error(), nil)
 		return
 	}
 
-	utils.HandleHTTPResponse(w, "User deleted successfully", http.StatusOK, nil)
+	utils.NewHTTPResponse(w).OK("User deleted successfully", nil)
 }
