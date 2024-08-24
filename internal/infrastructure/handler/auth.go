@@ -51,7 +51,7 @@ func (h *AuthHandler) Signup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, err := h.authUC.GenerateTokens(user.ID.String())
+	token, err := h.authUC.GenerateTokens(user.ID.String(), user.Email)
 	if err != nil {
 		utils.NewHTTPResponse(w).InternalServerError(err.Error(), nil)
 		return
@@ -100,7 +100,7 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, err := h.authUC.GenerateTokens(user.ID.String())
+	token, err := h.authUC.GenerateTokens(user.ID.String(), user.Email)
 	if err != nil {
 		utils.NewHTTPResponse(w).InternalServerError(err.Error(), nil)
 		return
