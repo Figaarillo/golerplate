@@ -3,6 +3,7 @@ package usecase
 import (
 	"github.com/Figaarillo/golerplate/internal/domain/entity"
 	"github.com/Figaarillo/golerplate/internal/domain/repository"
+	"github.com/Figaarillo/golerplate/internal/shared/exeption"
 )
 
 type UserUseCase struct {
@@ -14,6 +15,9 @@ func NewUserUseCase(r repository.UserRepository) *UserUseCase {
 }
 
 func (uc *UserUseCase) ListAll(offset, limit int) ([]entity.User, error) {
+	if offset < 0 || limit < 0 || (offset == 0 && limit == 0) {
+		return nil, exeption.ErrInvalidURLParams
+	}
 	return uc.repository.ListAll(offset, limit)
 }
 
