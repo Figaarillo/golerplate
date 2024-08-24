@@ -82,25 +82,25 @@ func (h *UserHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 // @Success 201 {object} entity.User "User created successfully"
 // @Router /api/users [post]
 func (h *UserHandler) Create(w http.ResponseWriter, r *http.Request) {
-	var payload entity.User
-	if err := utils.DecodeReqBody(r, &payload); err != nil {
+	var user entity.User
+	if err := utils.DecodeReqBody(r, &user); err != nil {
 		utils.NewHTTPResponse(w).InternalServerError(err.Error(), nil)
 		return
 	}
 
-	if err := h.validator.Struct(payload); err != nil {
+	if err := h.validator.Struct(user); err != nil {
 		errors := err.(validator.ValidationErrors)
 		utils.NewHTTPResponse(w).InternalServerError(fmt.Sprintf("validation error: %s", errors), nil)
 		return
 	}
 
-	user, err := h.usecase.Create(payload)
+	newUser, err := h.usecase.Create(user)
 	if err != nil {
 		utils.NewHTTPResponse(w).Conflict(err.Error(), nil)
 		return
 	}
 
-	utils.NewHTTPResponse(w).Created("User created successfully", map[string]string{"id": user.ID.String()})
+	utils.NewHTTPResponse(w).Created("User created successfully", map[string]string{"id": newUser.ID.String()})
 }
 
 // Update godoc
