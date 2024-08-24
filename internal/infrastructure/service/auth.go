@@ -8,25 +8,23 @@ import (
 	"github.com/golang-jwt/jwt"
 )
 
-func GenerateJWT(userId string, key []byte, exp int) (string, error) {
+func GenerateJWT(id string, credential map[string]string, key []byte, exp int) (string, error) {
 	claims := &entity.Claims{
-		UserID:    userId,
-		IssuedAt:  time.Now().Unix(),
-		ExpiresAt: time.Now().Add(time.Second * time.Duration(exp)).Unix(),
+		Id:         id,
+		Credential: credential,
+		IssuedAt:   time.Now().Unix(),
+		ExpiresAt:  time.Now().Add(time.Second * time.Duration(exp)).Unix(),
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString(key)
 }
 
-func CreateToken(userId string, accessToken string, refreshToken string, exp int) entity.Token {
+func CreateToken(Id string, accessToken string, refreshToken string, exp int) entity.Token {
 	return entity.Token{
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
-		ExpiresAt:    time.Now().Add(time.Second * time.Duration(exp)),
-		IssuedAt:     time.Now(),
-		TokenType:    "Bearer",
-		UserID:       userId,
+		Id:           Id,
 	}
 }
 

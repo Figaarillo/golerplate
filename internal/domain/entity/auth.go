@@ -1,23 +1,17 @@
 package entity
 
-import (
-	"time"
-
-	"github.com/golang-jwt/jwt"
-)
+import "github.com/golang-jwt/jwt"
 
 type Token struct {
-	ExpiresAt    time.Time
-	IssuedAt     time.Time
 	AccessToken  string
 	RefreshToken string
-	TokenType    string
-	UserID       string
+	Id           string
 }
 
 type Claims struct {
+	Credential map[string]string `json:"credential"`
 	jwt.StandardClaims
-	UserID    string `json:"user_id"`
+	Id        string `json:"id"`
 	IssuedAt  int64  `json:"iat"`
 	ExpiresAt int64  `json:"exp"`
 }
