@@ -60,7 +60,7 @@ func (h *ProductHandler) ListAll(w http.ResponseWriter, r *http.Request) {
 func (h *ProductHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 	id, err := utils.GetURLParam(r, "id")
 	if err != nil {
-		utils.NewHTTPResponse(w).InternalServerError(err.Error(), nil)
+		utils.NewHTTPResponse(w).BadRequest(err.Error(), nil)
 		return
 	}
 
@@ -85,7 +85,7 @@ func (h *ProductHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 func (h *ProductHandler) Create(w http.ResponseWriter, r *http.Request) {
 	var product entity.Product
 	if err := utils.DecodeReqBody(r, &product); err != nil {
-		utils.NewHTTPResponse(w).InternalServerError(err.Error(), nil)
+		utils.NewHTTPResponse(w).BadRequest(err.Error(), nil)
 		return
 	}
 
@@ -115,13 +115,13 @@ func (h *ProductHandler) Create(w http.ResponseWriter, r *http.Request) {
 func (h *ProductHandler) Update(w http.ResponseWriter, r *http.Request) {
 	id, err := utils.GetURLParam(r, "id")
 	if err != nil {
-		utils.NewHTTPResponse(w).InternalServerError(err.Error(), nil)
+		utils.NewHTTPResponse(w).BadRequest(err.Error(), nil)
 		return
 	}
 
 	var payload entity.Product
 	if err := utils.DecodeReqBody(r, &payload); err != nil {
-		utils.NewHTTPResponse(w).InternalServerError(err.Error(), nil)
+		utils.NewHTTPResponse(w).BadRequest(err.Error(), nil)
 		return
 	}
 
@@ -145,7 +145,7 @@ func (h *ProductHandler) Update(w http.ResponseWriter, r *http.Request) {
 func (h *ProductHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	id, err := utils.GetURLParam(r, "id")
 	if err != nil {
-		utils.NewHTTPResponse(w).InternalServerError(err.Error(), nil)
+		utils.NewHTTPResponse(w).BadRequest(err.Error(), nil)
 		return
 	}
 
