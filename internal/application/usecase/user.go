@@ -34,13 +34,14 @@ func (uc *UserUseCase) GetByProp(prop string, value interface{}) (entity.User, e
 	return uc.repository.GetByProp(prop, value)
 }
 
-func (uc *UserUseCase) Create(u entity.User) (entity.User, error) {
+func (uc *UserUseCase) Create(u entity.User) error {
 	user, err := entity.NewUser(u)
 	if err != nil {
-		return entity.User{}, err
+		return err
 	}
+	uc.repository.Create(user)
 
-	return uc.repository.Create(user)
+	return nil
 }
 
 func (uc *UserUseCase) Update(id string, payload entity.User) error {

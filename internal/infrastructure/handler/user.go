@@ -94,13 +94,12 @@ func (h *UserHandler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	newUser, err := h.usecase.Create(user)
-	if err != nil {
+	if err := h.usecase.Create(user); err != nil {
 		utils.NewHTTPResponse(w).Conflict(err.Error(), nil)
 		return
 	}
 
-	utils.NewHTTPResponse(w).Created("User created successfully", map[string]string{"user_id": newUser.ID.String()})
+	utils.NewHTTPResponse(w).Created("User created successfully", map[string]string{"user_id": user.ID.String()})
 }
 
 // Update godoc
