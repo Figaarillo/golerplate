@@ -1,27 +1,24 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/Figaarillo/golerplate/internal/application/usecase"
 	"github.com/Figaarillo/golerplate/internal/domain/entity"
 	"github.com/Figaarillo/golerplate/internal/domain/repository"
+	"github.com/Figaarillo/golerplate/internal/infrastructure/service"
 	"github.com/Figaarillo/golerplate/internal/shared/utils"
-	"github.com/go-playground/validator/v10"
 )
 
 type ProductHandler struct {
 	repository repository.ProductRepository
 	usecase    *usecase.ProductUseCase
-	validator  *validator.Validate
 }
 
 func NewProductHandler(r repository.ProductRepository) *ProductHandler {
 	return &ProductHandler{
 		repository: r,
 		usecase:    usecase.NewProductUseCase(r),
-		validator:  validator.New(),
 	}
 }
 
@@ -36,7 +33,11 @@ func NewProductHandler(r repository.ProductRepository) *ProductHandler {
 // @Success 200 {array} entity.Product "Products retrieved successfully"
 // @Router /api/products [get]
 func (h *ProductHandler) ListAll(w http.ResponseWriter, r *http.Request) {
-	offset, limit := utils.GetPagination(r)
+	offset, limit, err := utils.GetPagination(r)
+	if err != nil {
+		utils.NewHTTPResponse(w).BadRequest(err.Error(), nil)
+		return
+	}
 
 	products, err := h.usecase.ListAll(offset, limit)
 	if err != nil {
@@ -82,17 +83,14 @@ func (h *ProductHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 // @Success 201 {object} entity.Product "Product created successfully"
 // @Router /api/products [post]
 func (h *ProductHandler) Create(w http.ResponseWriter, r *http.Request) {
-	defer r.Body.Close()
-
 	var product entity.Product
 	if err := utils.DecodeReqBody(r, &product); err != nil {
 		utils.NewHTTPResponse(w).InternalServerError(err.Error(), nil)
 		return
 	}
 
-	if err := h.validator.Struct(product); err != nil {
-		errors := err.(validator.ValidationErrors)
-		utils.NewHTTPResponse(w).InternalServerError(fmt.Sprintf("validation error: %s", errors), nil)
+	if err := service.NewStructValidator(product).Validate(); err != nil {
+		utils.NewHTTPResponse(w).BadRequest(err.Error(), nil)
 		return
 	}
 
@@ -101,7 +99,7 @@ func (h *ProductHandler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	utils.NewHTTPResponse(w).Created("Product created successfully", nil)
+	utils.NewHTTPResponse(w).Created("Product created successfully", map[string]string{"product_id": product.ID.String()})
 }
 
 // Update godoc
@@ -115,8 +113,6 @@ func (h *ProductHandler) Create(w http.ResponseWriter, r *http.Request) {
 // @Success 200 {object} entity.Product "Product updated successfully"
 // @Router /api/products/{id} [put]
 func (h *ProductHandler) Update(w http.ResponseWriter, r *http.Request) {
-	defer r.Body.Close()
-
 	id, err := utils.GetURLParam(r, "id")
 	if err != nil {
 		utils.NewHTTPResponse(w).InternalServerError(err.Error(), nil)
@@ -134,7 +130,7 @@ func (h *ProductHandler) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	utils.NewHTTPResponse(w).OK("Product updated successfully", nil)
+	utils.NewHTTPResponse(w).OK("Product updated successfully", map[string]string{"product_id": id})
 }
 
 // Delete godoc
@@ -158,5 +154,5 @@ func (h *ProductHandler) Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	utils.NewHTTPResponse(w).OK("Product deleted successfully", nil)
+	utils.NewHTTPResponse(w).OK("Product deleted successfully", map[string]string{"product_id": id})
 }
