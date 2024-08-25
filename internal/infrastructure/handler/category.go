@@ -1,27 +1,24 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/Figaarillo/golerplate/internal/application/usecase"
 	"github.com/Figaarillo/golerplate/internal/domain/entity"
 	"github.com/Figaarillo/golerplate/internal/domain/repository"
+	"github.com/Figaarillo/golerplate/internal/infrastructure/service"
 	"github.com/Figaarillo/golerplate/internal/shared/utils"
-	"github.com/go-playground/validator/v10"
 )
 
 type CategoryHandler struct {
 	repository repository.CategoryRepository
 	usecase    *usecase.CategoryUseCase
-	validator  *validator.Validate
 }
 
 func NewCategoryHandler(r repository.CategoryRepository) *CategoryHandler {
 	return &CategoryHandler{
 		repository: r,
 		usecase:    usecase.NewCategoryUseCase(r),
-		validator:  validator.New(),
 	}
 }
 
@@ -36,7 +33,11 @@ func NewCategoryHandler(r repository.CategoryRepository) *CategoryHandler {
 // @Success 200 {array} entity.Category "Categories retrieved successfully"
 // @Router /api/categories [get]
 func (h *CategoryHandler) ListAll(w http.ResponseWriter, r *http.Request) {
-	offset, limit := utils.GetPagination(r)
+	offset, limit, err := utils.GetPagination(r)
+	if err != nil {
+		utils.NewHTTPResponse(w).BadRequest(err.Error(), nil)
+		return
+	}
 
 	categories, err := h.usecase.ListAll(offset, limit)
 	if err != nil {
@@ -59,7 +60,7 @@ func (h *CategoryHandler) ListAll(w http.ResponseWriter, r *http.Request) {
 func (h *CategoryHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 	id, err := utils.GetURLParam(r, "id")
 	if err != nil {
-		utils.NewHTTPResponse(w).InternalServerError(err.Error(), nil)
+		utils.NewHTTPResponse(w).BadRequest(err.Error(), nil)
 		return
 	}
 
@@ -90,19 +91,17 @@ func (h *CategoryHandler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := h.validator.Struct(category); err != nil {
-		errors := err.(validator.ValidationErrors)
-		utils.NewHTTPResponse(w).InternalServerError(fmt.Sprintf("validation error: %s", errors), nil)
+	if err := service.NewStructValidator(category).Validate(); err != nil {
+		utils.NewHTTPResponse(w).BadRequest(err.Error(), nil)
 		return
 	}
 
-	// TODO: modify this to use usecase to can return the category
 	if err := h.usecase.Create(category); err != nil {
 		utils.NewHTTPResponse(w).Conflict(err.Error(), nil)
 		return
 	}
 
-	utils.NewHTTPResponse(w).Created("Category created successfully", map[string]string{"id": category.ID.String()})
+	utils.NewHTTPResponse(w).Created("Category created successfully", map[string]string{"category_id": category.ID.String()})
 }
 
 // Update godoc
@@ -159,5 +158,5 @@ func (h *CategoryHandler) Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	utils.NewHTTPResponse(w).OK("Category deleted successfully", nil)
+	utils.NewHTTPResponse(w).OK("Category deleted successfully", map[string]string{"category_id": id})
 }
