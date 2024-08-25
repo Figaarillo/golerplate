@@ -1,27 +1,24 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/Figaarillo/golerplate/internal/application/usecase"
 	"github.com/Figaarillo/golerplate/internal/domain/entity"
 	"github.com/Figaarillo/golerplate/internal/domain/repository"
+	"github.com/Figaarillo/golerplate/internal/infrastructure/service"
 	"github.com/Figaarillo/golerplate/internal/shared/utils"
-	"github.com/go-playground/validator/v10"
 )
 
 type UserHandler struct {
 	repository repository.UserRepository
 	usecase    *usecase.UserUseCase
-	validator  *validator.Validate
 }
 
 func NewUserHandler(r repository.UserRepository) *UserHandler {
 	return &UserHandler{
 		repository: r,
 		usecase:    usecase.NewUserUseCase(r),
-		validator:  validator.New(),
 	}
 }
 
@@ -36,7 +33,11 @@ func NewUserHandler(r repository.UserRepository) *UserHandler {
 // @Success 200 {array} entity.User "Users retrieved successfully"
 // @Router /api/users [get]
 func (h *UserHandler) ListAll(w http.ResponseWriter, r *http.Request) {
-	offset, limit := utils.GetPagination(r)
+	offset, limit, err := utils.GetPagination(r)
+	if err != nil {
+		utils.NewHTTPResponse(w).BadRequest(err.Error(), nil)
+		return
+	}
 
 	users, err := h.usecase.ListAll(offset, limit)
 	if err != nil {
@@ -59,7 +60,7 @@ func (h *UserHandler) ListAll(w http.ResponseWriter, r *http.Request) {
 func (h *UserHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 	id, err := utils.GetURLParam(r, "id")
 	if err != nil {
-		utils.NewHTTPResponse(w).InternalServerError(err.Error(), nil)
+		utils.NewHTTPResponse(w).BadRequest(err.Error(), nil)
 		return
 	}
 
@@ -84,13 +85,12 @@ func (h *UserHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 func (h *UserHandler) Create(w http.ResponseWriter, r *http.Request) {
 	var user entity.User
 	if err := utils.DecodeReqBody(r, &user); err != nil {
-		utils.NewHTTPResponse(w).InternalServerError(err.Error(), nil)
+		utils.NewHTTPResponse(w).BadRequest(err.Error(), nil)
 		return
 	}
 
-	if err := h.validator.Struct(user); err != nil {
-		errors := err.(validator.ValidationErrors)
-		utils.NewHTTPResponse(w).InternalServerError(fmt.Sprintf("validation error: %s", errors), nil)
+	if err := service.NewStructValidator(user).Validate(); err != nil {
+		utils.NewHTTPResponse(w).BadRequest(err.Error(), nil)
 		return
 	}
 
@@ -100,7 +100,7 @@ func (h *UserHandler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	utils.NewHTTPResponse(w).Created("User created successfully", map[string]string{"id": newUser.ID.String()})
+	utils.NewHTTPResponse(w).Created("User created successfully", map[string]string{"user_id": newUser.ID.String()})
 }
 
 // Update godoc
@@ -116,13 +116,13 @@ func (h *UserHandler) Create(w http.ResponseWriter, r *http.Request) {
 func (h *UserHandler) Update(w http.ResponseWriter, r *http.Request) {
 	id, err := utils.GetURLParam(r, "id")
 	if err != nil {
-		utils.NewHTTPResponse(w).InternalServerError(err.Error(), nil)
+		utils.NewHTTPResponse(w).BadRequest(err.Error(), nil)
 		return
 	}
 
 	var payload entity.User
 	if err := utils.DecodeReqBody(r, &payload); err != nil {
-		utils.NewHTTPResponse(w).InternalServerError(err.Error(), nil)
+		utils.NewHTTPResponse(w).BadRequest(err.Error(), nil)
 		return
 	}
 
@@ -131,7 +131,7 @@ func (h *UserHandler) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	utils.NewHTTPResponse(w).OK("User updated successfully", nil)
+	utils.NewHTTPResponse(w).OK("User updated successfully", map[string]string{"user_id": id})
 }
 
 // Delete godoc
@@ -146,7 +146,7 @@ func (h *UserHandler) Update(w http.ResponseWriter, r *http.Request) {
 func (h *UserHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	id, err := utils.GetURLParam(r, "id")
 	if err != nil {
-		utils.NewHTTPResponse(w).InternalServerError(err.Error(), nil)
+		utils.NewHTTPResponse(w).BadRequest(err.Error(), nil)
 		return
 	}
 
@@ -155,5 +155,5 @@ func (h *UserHandler) Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	utils.NewHTTPResponse(w).OK("User deleted successfully", nil)
+	utils.NewHTTPResponse(w).OK("User deleted successfully", map[string]string{"user_id": id})
 }
