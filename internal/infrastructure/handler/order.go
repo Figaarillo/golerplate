@@ -6,21 +6,19 @@ import (
 	"github.com/Figaarillo/golerplate/internal/application/usecase"
 	"github.com/Figaarillo/golerplate/internal/domain/entity"
 	"github.com/Figaarillo/golerplate/internal/domain/repository"
+	"github.com/Figaarillo/golerplate/internal/infrastructure/service"
 	"github.com/Figaarillo/golerplate/internal/shared/utils"
-	"github.com/go-playground/validator/v10"
 )
 
 type OrderHandler struct {
 	repository repository.OrderRepository
 	usecase    *usecase.OrderUseCase
-	validator  *validator.Validate
 }
 
 func NewOrderHandler(r repository.OrderRepository) *OrderHandler {
 	return &OrderHandler{
 		repository: r,
 		usecase:    usecase.NewOrderUseCase(r),
-		validator:  validator.New(),
 	}
 }
 
@@ -34,8 +32,12 @@ func NewOrderHandler(r repository.OrderRepository) *OrderHandler {
 // @Param limit query int true "Limit"
 // @Success 200 {array} entity.Order "Orders retrieved successfully"
 // @Router /api/orders [get]
-func (h *OrderHandler) List(w http.ResponseWriter, r *http.Request) {
-	offset, limit := utils.GetPagination(r)
+func (h *OrderHandler) ListAll(w http.ResponseWriter, r *http.Request) {
+	offset, limit, err := utils.GetPagination(r)
+	if err != nil {
+		utils.NewHTTPResponse(w).BadRequest(err.Error(), nil)
+		return
+	}
 
 	orders, err := h.usecase.ListAll(offset, limit)
 	if err != nil {
@@ -58,7 +60,7 @@ func (h *OrderHandler) List(w http.ResponseWriter, r *http.Request) {
 func (h *OrderHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 	id, err := utils.GetURLParam(r, "id")
 	if err != nil {
-		utils.NewHTTPResponse(w).InternalServerError(err.Error(), nil)
+		utils.NewHTTPResponse(w).BadRequest(err.Error(), nil)
 		return
 	}
 
@@ -83,7 +85,7 @@ func (h *OrderHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 func (h *OrderHandler) GetByUserID(w http.ResponseWriter, r *http.Request) {
 	id, err := utils.GetURLParam(r, "id")
 	if err != nil {
-		utils.NewHTTPResponse(w).InternalServerError(err.Error(), nil)
+		utils.NewHTTPResponse(w).BadRequest(err.Error(), nil)
 		return
 	}
 
@@ -106,17 +108,14 @@ func (h *OrderHandler) GetByUserID(w http.ResponseWriter, r *http.Request) {
 // @Success 201 {object} entity.Order "Order created successfully"
 // @Router /api/orders [post]
 func (h *OrderHandler) Create(w http.ResponseWriter, r *http.Request) {
-	defer r.Body.Close()
-
 	var order entity.Order
 	if err := utils.DecodeReqBody(r, &order); err != nil {
-		utils.NewHTTPResponse(w).InternalServerError(err.Error(), nil)
+		utils.NewHTTPResponse(w).BadRequest(err.Error(), nil)
 		return
 	}
 
-	if err := h.validator.Struct(order); err != nil {
-		errors := err.(validator.ValidationErrors)
-		utils.NewHTTPResponse(w).BadRequest("Invalid request body", errors)
+	if err := service.NewStructValidator(order).Validate(); err != nil {
+		utils.NewHTTPResponse(w).BadRequest(err.Error(), nil)
 		return
 	}
 
@@ -125,7 +124,7 @@ func (h *OrderHandler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	utils.NewHTTPResponse(w).Created("Order created successfully", nil)
+	utils.NewHTTPResponse(w).Created("Order created successfully", map[string]string{"order_id": order.ID.String()})
 }
 
 // SetStatus godoc
@@ -143,7 +142,7 @@ func (h *OrderHandler) SetStatus(w http.ResponseWriter, r *http.Request) {
 
 	id, err := utils.GetURLParam(r, "id")
 	if err != nil {
-		utils.NewHTTPResponse(w).InternalServerError(err.Error(), nil)
+		utils.NewHTTPResponse(w).BadRequest(err.Error(), nil)
 		return
 	}
 
@@ -152,7 +151,7 @@ func (h *OrderHandler) SetStatus(w http.ResponseWriter, r *http.Request) {
 	}
 	var s status
 	if err := utils.DecodeReqBody(r, &s); err != nil {
-		utils.NewHTTPResponse(w).InternalServerError(err.Error(), nil)
+		utils.NewHTTPResponse(w).BadRequest(err.Error(), nil)
 		return
 	}
 
@@ -161,7 +160,7 @@ func (h *OrderHandler) SetStatus(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	utils.NewHTTPResponse(w).OK("Order status updated successfully", nil)
+	utils.NewHTTPResponse(w).OK("Order status updated successfully", map[string]string{"order_id": id})
 }
 
 // Delete godoc
@@ -176,7 +175,7 @@ func (h *OrderHandler) SetStatus(w http.ResponseWriter, r *http.Request) {
 func (h *OrderHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	id, err := utils.GetURLParam(r, "id")
 	if err != nil {
-		utils.NewHTTPResponse(w).InternalServerError(err.Error(), nil)
+		utils.NewHTTPResponse(w).BadRequest(err.Error(), nil)
 		return
 	}
 
@@ -185,5 +184,5 @@ func (h *OrderHandler) Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	utils.NewHTTPResponse(w).OK("Order deleted successfully", nil)
+	utils.NewHTTPResponse(w).OK("Order deleted successfully", map[string]string{"order_id": id})
 }
