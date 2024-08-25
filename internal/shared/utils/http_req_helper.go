@@ -10,18 +10,25 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func GetPagination(r *http.Request) (int, int) {
-	offset, _ := strconv.Atoi(r.URL.Query().Get("offset"))
-	limit, _ := strconv.Atoi(r.URL.Query().Get("limit"))
+func GetPagination(r *http.Request) (int, int, error) {
+	offset, err := strconv.Atoi(r.URL.Query().Get("offset"))
+	if err != nil {
+		return 0, 0, exeption.ErrInvalidPagination
+	}
 
-	return offset, limit
+	limit, err := strconv.Atoi(r.URL.Query().Get("limit"))
+	if err != nil {
+		return 0, 0, exeption.ErrInvalidPagination
+	}
+
+	return offset, limit, nil
 }
 
 func GetURLParam(r *http.Request, key string) (string, error) {
 	param := mux.Vars(r)[key]
 
 	if param == "" {
-		return "", exeption.ErrMissingURLParam
+		return "", fmt.Errorf("missing url param: %s", key)
 	}
 
 	return param, nil
@@ -40,7 +47,6 @@ func DecodeReqBody(r *http.Request, body interface{}) error {
 func GetHeader(r *http.Request, key string) (string, error) {
 	header := r.Header.Get(key)
 	if header == "" {
-		// return "", exeption.ErrMissingHeader
 		return "", fmt.Errorf("missing header: %s", key)
 	}
 

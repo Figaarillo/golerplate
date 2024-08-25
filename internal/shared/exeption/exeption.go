@@ -6,4 +6,5 @@ var (
 	ErrMissingURLParam     = errors.New("error: url param is empty or not found")
 	ErrInvalidBodyProvided = errors.New("error: invalid body provided")
 	ErrInvalidURLParams    = errors.New("error: invalid url params provided")
+	ErrInvalidPagination   = errors.New("error: invalid pagination provided")
 )
