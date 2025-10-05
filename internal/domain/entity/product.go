@@ -54,12 +54,19 @@ func (p *Product) Update(payload Product) error {
 }
 
 func (p *Product) Validate() error {
-	p.validateName()
-	p.validateDescription()
-	p.validateStock()
-	p.validatePrice()
-	p.validateCategoryID()
+	validators := []func() error{
+		p.validateName,
+		p.validateDescription,
+		p.validateStock,
+		p.validatePrice,
+		p.validateCategoryID,
+	}
 
+	for _, validator := range validators {
+		if err := validator(); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
@@ -96,11 +103,13 @@ func (p *Product) validatePrice() error {
 }
 
 func (p *Product) validateCategoryID() error {
-	if err := utils.EnsureValueIsNotEmpty(p.CategoryID.String()); err != nil {
+	categoryID := p.CategoryID.String()
+
+	if err := utils.EnsureValueIsNotEmpty(categoryID); err != nil {
 		return err
 	}
 
-	if err := utils.EnsureValueIsAValidUUID(string(p.CategoryID.String())); err != nil {
+	if err := utils.EnsureValueIsAValidUUID(categoryID); err != nil {
 		return err
 	}
 

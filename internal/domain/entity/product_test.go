@@ -7,13 +7,14 @@ import (
 	"github.com/google/uuid"
 )
 
-func TestNewProduct(t *testing.T) {
-	category := entity.Category{Name: "Test Category", Description: "This is a test category"}
+var category, _ = entity.NewCategory(entity.Category{Name: "Test Category", Description: "This is a test category"})
 
+func TestNewProduct(t *testing.T) {
 	payload := entity.Product{
 		Name:        "Test Product",
 		Description: "This is a test product",
-		Category:    category,
+		Category:    *category,
+		CategoryID:  category.ID,
 		Stock:       10,
 		Price:       25.99,
 	}
@@ -24,6 +25,7 @@ func TestNewProduct(t *testing.T) {
 
 	if product == nil {
 		t.Error("Product is nil")
+		return
 	}
 
 	if product.Name != payload.Name {
@@ -55,49 +57,49 @@ func TestNewProduct(t *testing.T) {
 	}
 }
 
-func TestProduct_Validate(t *testing.T) {
+func TestValidate(t *testing.T) {
 	tests := []struct {
-		name        string
-		product     entity.Product
-		expectError bool
+		name     string
+		input    entity.Product
+		expected bool
 	}{
 		{
-			name:        "Valid Product",
-			product:     entity.Product{Name: "Test Product", Description: "Test Description", Category: entity.Category{Name: "Test Category", Description: "Test Description"}, Stock: 10, Price: 25.99},
-			expectError: false,
+			name:     "Valid Product",
+			input:    entity.Product{Name: "Test Product", Description: "Test Description", Category: *category, CategoryID: category.ID, Stock: 10, Price: 25.99},
+			expected: false,
 		},
 		{
-			name:        "Empty Name",
-			product:     entity.Product{Name: "", Description: "Test Description", Category: entity.Category{Name: "Test Category", Description: "Test Description"}, Stock: 10, Price: 25.99},
-			expectError: true,
+			name:     "Empty Name",
+			input:    entity.Product{Name: "", Description: "Test Description", Category: *category, CategoryID: category.ID, Stock: 10, Price: 25.99},
+			expected: true,
 		},
 		{
-			name:        "Empty Description",
-			product:     entity.Product{Name: "Test Product", Description: "", Category: entity.Category{Name: "Test Category", Description: "Test Description"}, Stock: 10, Price: 25.99},
-			expectError: true,
+			name:     "Empty Description",
+			input:    entity.Product{Name: "Test Product", Description: "", Category: *category, CategoryID: category.ID, Stock: 10, Price: 25.99},
+			expected: true,
 		},
 		{
-			name:        "Empty Category",
-			product:     entity.Product{Name: "Test Product", Description: "Test Description", Stock: 10, Price: 25.99, CategoryID: uuid.Nil},
-			expectError: true,
+			name:     "Empty Category",
+			input:    entity.Product{Name: "Test Product", Description: "Test Description", Stock: 10, Price: 25.99, CategoryID: entity.ID(uuid.Nil)},
+			expected: true,
 		},
 		{
-			name:        "Zero Stock",
-			product:     entity.Product{Name: "Test Product", Description: "Test Description", Category: entity.Category{Name: "Test Category", Description: "Test Description"}, Stock: 0, Price: 25.99},
-			expectError: true,
+			name:     "Zero Stock",
+			input:    entity.Product{Name: "Test Product", Description: "Test Description", Category: *category, CategoryID: category.ID, Stock: 0, Price: 25.99},
+			expected: true,
 		},
 		{
-			name:        "Zero Price",
-			product:     entity.Product{Name: "Test Product", Description: "Test Description", Category: entity.Category{Name: "Test Category", Description: "Test Description"}, Stock: 10, Price: 0},
-			expectError: true,
+			name:     "Zero Price",
+			input:    entity.Product{Name: "Test Product", Description: "Test Description", Category: *category, CategoryID: category.ID, Stock: 10, Price: 0},
+			expected: true,
 		},
 	}
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			err := test.product.Validate()
-			if (err != nil) != test.expectError {
-				t.Errorf("Expected error: %v, got: %v", test.expectError, err)
+			err := test.input.Validate()
+			if (err != nil) != test.expected {
+				t.Errorf("Expected error: %v, got error: %v", test.expected, err)
 			}
 		})
 	}

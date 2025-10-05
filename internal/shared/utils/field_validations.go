@@ -15,8 +15,8 @@ func EnsureValueIsNotEmpty(field string) error {
 }
 
 func EnsureNumberValueIsPositive(number float64) error {
-	if number < 0 {
-		return exeption.ErrMissingField
+	if number <= 0 {
+		return exeption.ErrInvalidNumberFieldZero
 	}
 
 	return nil
@@ -51,6 +51,10 @@ func EnsureValueIsValidAge(age int) error {
 }
 
 func EnsureValueIsAValidUUID(uuid string) error {
+	if uuid == "00000000-0000-0000-0000-000000000000" {
+		return exeption.ErrInvalidUUIDFormat
+	}
+
 	if !regexp.MustCompile(`^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$`).MatchString(uuid) {
 		return exeption.ErrInvalidUUIDFormat
 	}
