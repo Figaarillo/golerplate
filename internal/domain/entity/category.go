@@ -44,9 +44,15 @@ func (c *Category) Update(payload Category) error {
 }
 
 func (c *Category) Validate() error {
-	c.validateName()
-	c.validateDescription()
-
+	validators := []func() error{
+		c.validateName,
+		c.validateDescription,
+	}
+	for _, validator := range validators {
+		if err := validator(); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
