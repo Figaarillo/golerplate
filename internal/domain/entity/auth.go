@@ -5,13 +5,13 @@ import "github.com/golang-jwt/jwt"
 type Token struct {
 	AccessToken  string
 	RefreshToken string
-	Id           string
+	ID           string
 }
 
 type Claims struct {
 	Credential map[string]string `json:"credential"`
 	jwt.StandardClaims
-	Id        string `json:"id"`
+	ID        string `json:"id"`
 	IssuedAt  int64  `json:"iat"`
 	ExpiresAt int64  `json:"exp"`
 }

@@ -42,18 +42,18 @@ func (uc *AuthUseCase) GenerateRefreshToken(userID string, email string) (string
 	return claims, nil
 }
 
-func (uc *AuthUseCase) GenerateTokens(userId string, email string) (entity.Token, error) {
-	accessToken, err := uc.GenerateAccessToken(userId, email)
+func (uc *AuthUseCase) GenerateTokens(userID string, email string) (entity.Token, error) {
+	accessToken, err := uc.GenerateAccessToken(userID, email)
 	if err != nil {
 		return entity.Token{}, err
 	}
 
-	refreshToken, err := uc.GenerateRefreshToken(userId, email)
+	refreshToken, err := uc.GenerateRefreshToken(userID, email)
 	if err != nil {
 		return entity.Token{}, err
 	}
 
-	jwt := service.CreateToken(userId, accessToken, refreshToken, uc.env.JWT_EXPIRATION)
+	jwt := service.CreateToken(userID, accessToken, refreshToken, uc.env.JWT_EXPIRATION)
 
 	return jwt, nil
 }
@@ -83,7 +83,7 @@ func (uc *AuthUseCase) RefreshAndStoreAccessToken(refreshToken string) (string, 
 		return "", err
 	}
 
-	newAccessToken, err := uc.GenerateAccessToken(claims.Id, claims.Credential["email"])
+	newAccessToken, err := uc.GenerateAccessToken(claims.ID, claims.Credential["email"])
 	if err != nil {
 		return "", err
 	}

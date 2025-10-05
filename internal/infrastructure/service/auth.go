@@ -10,7 +10,7 @@ import (
 
 func GenerateJWT(id string, credential map[string]string, key []byte, exp int) (string, error) {
 	claims := &entity.Claims{
-		Id:         id,
+		ID:         id,
 		Credential: credential,
 		IssuedAt:   time.Now().Unix(),
 		ExpiresAt:  time.Now().Add(time.Second * time.Duration(exp)).Unix(),
@@ -20,11 +20,11 @@ func GenerateJWT(id string, credential map[string]string, key []byte, exp int) (
 	return token.SignedString(key)
 }
 
-func CreateToken(Id string, accessToken string, refreshToken string, exp int) entity.Token {
+func CreateToken(ID string, accessToken string, refreshToken string, exp int) entity.Token {
 	return entity.Token{
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
-		Id:           Id,
+		ID:           ID,
 	}
 }
 
