@@ -35,9 +35,18 @@ func EnsureValueIsAValidEmailFormat(email string) error {
 }
 
 func EnsureValueIsValidPasswordComplexity(password string) error {
-	// if !regexp.MustCompile(`^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$`).MatchString(password) {
-	// 	return exeption.ErrInvalidPassword
-	// }
+	if len(password) < 8 {
+		return exeption.ErrInvalidPassword
+	}
+
+	hasUpper := regexp.MustCompile(`[A-Z]`).MatchString(password)
+	hasLower := regexp.MustCompile(`[a-z]`).MatchString(password)
+	hasNumber := regexp.MustCompile(`\d`).MatchString(password)
+	hasSpecial := regexp.MustCompile(`[\W_]`).MatchString(password)
+
+	if !hasUpper || !hasLower || !hasNumber || !hasSpecial {
+		return exeption.ErrInvalidPassword
+	}
 
 	return nil
 }

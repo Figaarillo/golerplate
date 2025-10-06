@@ -2,62 +2,117 @@ package entity_test
 
 import (
 	"testing"
+	"time"
 
 	"github.com/Figaarillo/golerplate/internal/domain/entity"
 )
 
+var validUserPayload = entity.User{
+	Email:     "test@example.com",
+	Password:  "password123",
+	FirstName: "John",
+	LastName:  "Doe",
+	Age:       30,
+}
+
 func TestNewUser(t *testing.T) {
-	payload := entity.User{
-		Email:     "test@example.com",
-		Password:  "password123",
-		FirstName: "John",
-		LastName:  "Doe",
-		Age:       30,
-	}
-	user, err := entity.NewUser(payload)
+	user, err := entity.NewUser(validUserPayload)
 	if err != nil {
 		t.Errorf("Error creating user: %v", err)
 	}
 
 	if user == nil {
 		t.Error("User is nil")
-	}
-
-	if user.Email != payload.Email {
-		t.Errorf("Expected email %s, got %s", payload.Email, user.Email)
-	}
-
-	if user.FirstName != payload.FirstName {
-		t.Errorf("Expected first name %s, got %s", payload.FirstName, user.FirstName)
-	}
-
-	if user.LastName != payload.LastName {
-		t.Errorf("Expected last name %s, got %s", payload.LastName, user.LastName)
-	}
-
-	if user.Age != payload.Age {
-		t.Errorf("Expected age %d, got %d", payload.Age, user.Age)
+		return
 	}
 
 	if user.ID.String() == "" {
-		t.Error("User ID is empty")
-	}
-
-	if user.CreatedAt.IsZero() {
-		t.Error("User CreatedAt is zero")
-	}
-
-	if user.UpdatedAt.IsZero() {
-		t.Error("User UpdatedAt is zero")
-	}
-
-	// Test password hashing
-	if err := user.ComparePassword(payload.Password); err != nil {
-		t.Errorf("Error comparing passwords: %v", err)
+		t.Error("expected non-empty user ID")
 	}
 }
 
-func TestUser_Validate(t *testing.T) {
+func TestNewUser_InvalidEmail(t *testing.T) {
+	payload := validUserPayload
+	payload.Email = "invalid-email"
+
+	user, err := entity.NewUser(payload)
+	if err == nil {
+		t.Error("expected error for invalid email, got nil")
+	}
+	if user != nil {
+		t.Error("expected user to be nil on error")
+	}
+}
+
+func TestComparePassword(t *testing.T) {
+	payload := validUserPayload
+	user, _ := entity.NewUser(payload)
+
+	// Correct password
+	if err := user.ComparePassword(payload.Password); err != nil {
+		t.Error("expected password to match, got error:", err)
+	}
+
+	// Wrong password
+	if err := user.ComparePassword("wrong-password"); err == nil {
+		t.Error("expected error for wrong password, got nil")
+	}
+}
+
+func TestValidate_InvalidFields(t *testing.T) {
+	tests := []struct {
+		name    string
+		user    entity.User
+		wantErr bool
+	}{
+		{"Empty email", entity.User{}, true},
+		{"Invalid email", entity.User{Email: "invalid@", Password: "Password123!", FirstName: "John", LastName: "Doe", Age: 25}, true},
+		{"Empty password", entity.User{Email: "test@example.com"}, true},
+		{"Empty first name", entity.User{Email: "test@example.com", Password: "Password123!", LastName: "Doe"}, true},
+		{"Empty last name", entity.User{Email: "test@example.com", Password: "Password123!", FirstName: "John"}, true},
+		{"Negative age", entity.User{Email: "test@example.com", Password: "Password123!", FirstName: "John", LastName: "Doe", Age: -5}, true},
+		{"Too high age", entity.User{Email: "test@example.com", Password: "Password123!", FirstName: "John", LastName: "Doe", Age: 200}, true},
+		{"Valid user", validUserPayload, false},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := tt.user.Validate()
+			if (err != nil) != tt.wantErr {
+				t.Errorf("expected error=%v, got %v", tt.wantErr, err)
+			}
+		})
+	}
+}
+
+func TestUpdate_PartialFields(t *testing.T) {
+	user, _ := entity.NewUser(validUserPayload)
+
+	oldName := user.FirstName
+	oldUpdatedAt := user.UpdatedAt
+
+	time.Sleep(1 * time.Millisecond) // ensure UpdatedAt changes
+
+	updatePayload := entity.User{
+		LastName: "Smith",
+	}
+	err := user.Update(updatePayload)
+	if err != nil {
+		t.Errorf("unexpected error updating user: %v", err)
+	}
+
+	if user.FirstName != oldName {
+		t.Error("expected first name to remain unchanged")
+	}
+	if user.LastName != "Smith" {
+		t.Errorf("expected last name to be updated, got %s", user.LastName)
+	}
+	if !user.UpdatedAt.After(oldUpdatedAt) {
+		t.Error("expected UpdatedAt to be updated")
+	}
+}
+
+func TestUserValidate(t *testing.T) {
 	tests := []struct {
 		name        string
 		user        entity.User

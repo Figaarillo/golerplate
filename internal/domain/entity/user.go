@@ -37,6 +37,10 @@ func NewUser(payload User) (*User, error) {
 	}
 	user.Password = pass
 
+	if err := user.Validate(); err != nil {
+		return nil, err
+	}
+
 	return user, nil
 }
 
@@ -54,11 +58,19 @@ func (c *User) Update(payload User) error {
 }
 
 func (c *User) Validate() error {
-	c.validateEmail()
-	c.validatePassword()
-	c.validateFirstName()
-	c.validateLastName()
-	c.validateAge()
+	validators := []func() error{
+		c.validateEmail,
+		c.validatePassword,
+		c.validateFirstName,
+		c.validateLastName,
+		c.validateAge,
+	}
+
+	for _, validator := range validators {
+		if err := validator(); err != nil {
+			return err
+		}
+	}
 
 	return nil
 }
