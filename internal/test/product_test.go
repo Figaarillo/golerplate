@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"testing"
 
+	"github.com/Figaarillo/golerplate/internal/bootstrap"
 	"github.com/Figaarillo/golerplate/internal/domain/entity"
-	"github.com/Figaarillo/golerplate/internal/setup"
 )
 
 var (

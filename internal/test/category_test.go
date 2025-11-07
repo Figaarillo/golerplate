@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/Figaarillo/golerplate/internal/domain/entity"
-	"github.com/Figaarillo/golerplate/internal/setup"
+	"github.com/Figaarillo/golerplate/internal/bootstrap"
 )
 
 var category1, category2 *entity.Category

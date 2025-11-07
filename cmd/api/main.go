@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/Figaarillo/golerplate/internal/setup"
+	"github.com/Figaarillo/golerplate/internal/bootstrap"
 	"github.com/Figaarillo/golerplate/internal/shared/config"
 
 	_ "github.com/Figaarillo/golerplate/docs" // load API Docs files (Swagger)

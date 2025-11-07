@@ -15,3 +15,7 @@ var ErrInvalidPassword = errors.New("password must be at least 8 characters long
 var ErrInvalidAge = errors.New("age must be greater than 0 and less than 120")
 
 var ErrInvalidUUIDFormat = errors.New("invalid UUID format")
+
+var ErrInvalidOrderStatus = errors.New("order status must be one of the following: pending, processing, shipped, delivered, cancelled")
+
+var ErrInvalidQuantity = errors.New("quantity must be greater than 0")
