@@ -21,6 +21,7 @@ func TestNewClient(t *testing.T) {
 
 	if client == nil {
 		t.Error("Client is nil")
+		return
 	}
 
 	if client.Email != payload.Email {

@@ -1,9 +1,11 @@
 package utils
 
 import (
+	"errors"
 	"regexp"
 
 	"github.com/Figaarillo/golerplate/internal/domain/exeption"
+	"github.com/google/uuid"
 )
 
 func EnsureValueIsNotEmpty(field string) error {
@@ -50,9 +52,16 @@ func EnsureValueIsValidAge(age int) error {
 	return nil
 }
 
-func EnsureValueIsAValidUUID(uuid string) error {
-	if !regexp.MustCompile(`^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$`).MatchString(uuid) {
-		return exeption.ErrInvalidUUIDFormat
+var ErrInvalidUUIDFormat = errors.New("invalid UUID format")
+
+func EnsureValueIsAValidUUID(value string) error {
+	parsed, err := uuid.Parse(value)
+	if err != nil {
+		return ErrInvalidUUIDFormat
+	}
+
+	if parsed == uuid.Nil {
+		return ErrInvalidUUIDFormat
 	}
 
 	return nil

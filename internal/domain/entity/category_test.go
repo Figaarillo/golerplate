@@ -14,10 +14,12 @@ func TestNewCategory(t *testing.T) {
 	category, err := entity.NewCategory(payload)
 	if err != nil {
 		t.Errorf("Error creating category: %v", err)
+		return
 	}
 
 	if category == nil {
 		t.Error("Category is nil")
+		return
 	}
 
 	if category.Name != payload.Name {
@@ -74,6 +76,37 @@ func TestCategory_Validate(t *testing.T) {
 			err := test.category.Validate()
 			if (err != nil) != test.expectError {
 				t.Errorf("Expected error: %v, got: %v", test.expectError, err)
+			}
+		})
+	}
+}
+
+func TestCategory_Update(t *testing.T) {
+	tests := []struct {
+		name string // description of this test case
+		// Named input parameters for receiver constructor.
+		cpayload entity.Category
+		// Named input parameters for target function.
+		payload entity.Category
+		wantErr bool
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			c, err := entity.NewCategory(tt.cpayload)
+			if err != nil {
+				t.Fatalf("could not construct receiver type: %v", err)
+			}
+			gotErr := c.Update(tt.payload)
+			if gotErr != nil {
+				if !tt.wantErr {
+					t.Errorf("Update() failed: %v", gotErr)
+				}
+				return
+			}
+			if tt.wantErr {
+				t.Fatal("Update() succeeded unexpectedly")
 			}
 		})
 	}

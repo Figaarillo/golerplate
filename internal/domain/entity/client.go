@@ -31,11 +31,20 @@ func NewClient(payload Client) (*Client, error) {
 		UpdatedAt: time.Now(),
 	}
 
-	pass, err := hashPassword(payload.Password)
-	if err != nil {
+	if err := utils.EnsureValueIsNotEmpty(payload.Password); err != nil {
 		return nil, err
 	}
+
+	if err := utils.EnsureValueIsAValidEmailFormat(payload.Email); err != nil {
+		return nil, err
+	}
+
+	pass, _ := hashPassword(payload.Password)
 	client.Password = pass
+
+	if err := client.Validate(); err != nil {
+		return nil, err
+	}
 
 	return client, nil
 }
@@ -54,11 +63,19 @@ func (c *Client) Update(payload Client) error {
 }
 
 func (c *Client) Validate() error {
-	c.validateEmail()
-	c.validatePassword()
-	c.validateFirstName()
-	c.validateLastName()
-	c.validateAge()
+	validators := []func() error{
+		c.validateEmail,
+		c.validatePassword,
+		c.validateFirstName,
+		c.validateLastName,
+		c.validateAge,
+	}
+
+	for _, validator := range validators {
+		if err := validator(); err != nil {
+			return err
+		}
+	}
 
 	return nil
 }

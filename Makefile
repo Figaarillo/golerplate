@@ -30,6 +30,10 @@ test.unit.product:
 	@echo "Running unit test for product..."
 	go test -v ./internal/domain/entity/product_test.go
 
+test.unit.client:
+	@echo "Running unit test for client..."
+	go test -v ./internal/domain/entity/client_test.go
+
 test.e2e:
 	@echo "Running all E2E tests..."
 	go test -v ./internal/test/

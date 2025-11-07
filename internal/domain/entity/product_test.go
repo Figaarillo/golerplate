@@ -8,22 +8,26 @@ import (
 )
 
 func TestNewProduct(t *testing.T) {
-	category := entity.Category{Name: "Test Category", Description: "This is a test category"}
+	newCategory, _ := entity.NewCategory(entity.Category{
+		Name: "Test Category", Description: "This is a test category",
+	})
 
 	payload := entity.Product{
 		Name:        "Test Product",
 		Description: "This is a test product",
-		Category:    category,
+		CategoryID:  newCategory.ID,
 		Stock:       10,
 		Price:       25.99,
 	}
 	product, err := entity.NewProduct(payload)
 	if err != nil {
 		t.Errorf("Error creating product: %v", err)
+		return
 	}
 
 	if product == nil {
 		t.Error("Product is nil")
+		return
 	}
 
 	if product.Name != payload.Name {
@@ -56,6 +60,11 @@ func TestNewProduct(t *testing.T) {
 }
 
 func TestProduct_Validate(t *testing.T) {
+	category, _ := entity.NewCategory(entity.Category{
+		Name:        "Valid Category",
+		Description: "Valid Description",
+	})
+
 	tests := []struct {
 		name        string
 		product     entity.Product
@@ -63,12 +72,12 @@ func TestProduct_Validate(t *testing.T) {
 	}{
 		{
 			name:        "Valid Product",
-			product:     entity.Product{Name: "Test Product", Description: "Test Description", Category: entity.Category{Name: "Test Category", Description: "Test Description"}, Stock: 10, Price: 25.99},
+			product:     entity.Product{Name: "Test Product", Description: "Test Description", CategoryID: category.ID, Price: 25.99},
 			expectError: false,
 		},
 		{
 			name:        "Empty Name",
-			product:     entity.Product{Name: "", Description: "Test Description", Category: entity.Category{Name: "Test Category", Description: "Test Description"}, Stock: 10, Price: 25.99},
+			product:     entity.Product{Name: "", Description: "Test Description", CategoryID: category.ID, Stock: 10, Price: 25.99},
 			expectError: true,
 		},
 		{

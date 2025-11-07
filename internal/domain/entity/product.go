@@ -54,11 +54,21 @@ func (p *Product) Update(payload Product) error {
 }
 
 func (p *Product) Validate() error {
-	p.validateName()
-	p.validateDescription()
-	p.validateStock()
-	p.validatePrice()
-	p.validateCategoryID()
+	if err := p.validateName(); err != nil {
+		return err
+	}
+	if err := p.validateDescription(); err != nil {
+		return err
+	}
+	if err := p.validateStock(); err != nil {
+		return err
+	}
+	if err := p.validatePrice(); err != nil {
+		return err
+	}
+	if err := p.validateCategoryID(); err != nil {
+		return err
+	}
 
 	return nil
 }

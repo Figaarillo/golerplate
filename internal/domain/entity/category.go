@@ -44,9 +44,12 @@ func (c *Category) Update(payload Category) error {
 }
 
 func (c *Category) Validate() error {
-	c.validateName()
-	c.validateDescription()
-
+	if err := c.validateName(); err != nil {
+		return err
+	}
+	if err := c.validateDescription(); err != nil {
+		return err
+	}
 	return nil
 }
 
